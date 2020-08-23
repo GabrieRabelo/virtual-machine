@@ -1,4 +1,4 @@
-public class Aux {
+public class Utils {
 	public void dump(Word w) {
 		System.out.print("[ ");
 		System.out.print(w.opc); System.out.print(", ");

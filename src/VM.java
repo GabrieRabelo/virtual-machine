@@ -19,14 +19,14 @@ public class VM {
 	public int tamMem;    
     public Word[] m;     
     public CPU cpu;    
-    public Aux aux;
+    public Utils utils;
 
     public VM(){
 		tamMem = 1024;
 		m = new Word[tamMem]; // m ee a memoria
 		for (int i=0; i<tamMem; i++) { m[i] = new Word(Opcode.___,-1,-1,-1); };
 		cpu = new CPU(m);
-		aux = new Aux();
+		utils = new Utils();
 	}
 
 	/**
@@ -34,12 +34,12 @@ public class VM {
 	 */
 	public void test1(){
 		Word[] p = new Programas().progMinimo;
-		aux.carga(p, m);
+		utils.carga(p, m);
 		cpu.setContext(0, tamMem - 1, 0);
 		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(m, 0, 15);
+		utils.dump(m, 0, 15);
 		System.out.println("---------------------------------- após execucao ");
 		cpu.run();
-		aux.dump(m, 0, 15);
+		utils.dump(m, 0, 15);
 	}
 }
