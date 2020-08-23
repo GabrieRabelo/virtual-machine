@@ -6,7 +6,7 @@ public class Word { 	// cada posicao da memoria ee uma plavra, e tem uma instruc
 	public int r2; 		// indice do segundo registrador da operacao (Rc ou Rs cfe operacao)
 	public int p; 		// parametro para instrucao (k ou A cfe operacao), ou o dado, se opcode = DADO
 
-	public Word(Opcode _opc, int _r1, int _r2, int _p) {
-		opc = _opc;   r1 = _r1;    r2 = _r2;	p = _p;
+	public Word(Opcode opc, int r1, int r2, int p) {
+		this.opc = opc;   this.r1 = r1;    this.r2 = r2;	this.p = p;
 	}
 }

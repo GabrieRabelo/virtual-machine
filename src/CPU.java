@@ -20,12 +20,12 @@ public class CPU {
 		this.base = base;
 		this.limite = limite;
 		this.pc = pc;
-		this.interrupts = Interrupts.noInterrupt;
+		this.interrupts = Interrupts.NO_INTERRUPT;
 	}
 
 	private boolean isLegal(int e) {
 		if ((e < base) || (e > limite)) {
-			interrupts = Interrupts.intEnderecoInvalido;
+			interrupts = Interrupts.INT_ENDERECO_INVALIDO;
 			return false;
 		}
 		return true;
@@ -115,7 +115,7 @@ public class CPU {
 						break;
 
 					case STOP:
-						interrupts = Interrupts.intSTOP;
+						interrupts = Interrupts.INT_STOP;
 						break;
 
 					case DADO:
@@ -128,7 +128,7 @@ public class CPU {
 				}
 			}
 
-			if (interrupts != Interrupts.noInterrupt) {
+			if (interrupts != Interrupts.NO_INTERRUPT) {
 				System.out.print("Interrupcao ");
 				System.out.println(interrupts);
 				break;
