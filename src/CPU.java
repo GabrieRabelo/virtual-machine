@@ -3,23 +3,23 @@ import enums.Opcode;
 
 public class CPU {
 
-	private int pc;
-	private Word ir;
-	private int[] reg;
+	private int programCounter;
+	private Word instrucionRegister;
+	private int[] registers;
 	private Interrupts interrupts;
 	private int base;
 	private int limite;
-	private Word[] mem;
+	private Word[] memory;
 
-	public CPU(Word[] mem) {
-		this.mem = mem;
-		reg = new int[8];
+	public CPU(Word[] memory) {
+		this.memory = memory;
+		registers = new int[8];
 	}
 
-	public void setContext(int base, int limite, int pc) {
+	public void setContext(int base, int limite, int programCounter) {
 		this.base = base;
 		this.limite = limite;
-		this.pc = pc;
+		this.programCounter = programCounter;
 		this.interrupts = Interrupts.NO_INTERRUPT;
 	}
 
@@ -34,10 +34,10 @@ public class CPU {
 	public void run() {
 		while (true) {
 			//Fetch
-			if (isLegal(pc)) {
-				ir = mem[pc];
+			if (isLegal(programCounter)) {
+				instrucionRegister = memory[programCounter];
 				// EXECUTA INSTRUCAO NO ir
-				switch (ir.opc) {
+				switch (instrucionRegister.opCode) {
 					case JMP: // PC ← k
 
 						break;
@@ -74,8 +74,8 @@ public class CPU {
 						break;
 
 					case LDI: // Rd ← k
-						reg[ir.r1] = ir.p;
-						pc++;
+						registers[instrucionRegister.r1] = instrucionRegister.param;
+						programCounter++;
 						break;
 
 					case LDD: // Rd ← [A]
@@ -83,10 +83,10 @@ public class CPU {
 						break;
 
 					case STD: // [A] ← Rs
-						if (isLegal(ir.p)) {
-							mem[ir.p].opc = Opcode.DADO;
-							mem[ir.p].p = reg[ir.r1];
-							pc++;
+						if (isLegal(instrucionRegister.param)) {
+							memory[instrucionRegister.param].opCode = Opcode.DADO;
+							memory[instrucionRegister.param].param = registers[instrucionRegister.r1];
+							programCounter++;
 						}
 						break;
 
@@ -111,7 +111,7 @@ public class CPU {
 						break;
 
 					case SWAP: //Rd7←Rd3, Rd6←Rd2,
-						//Rd5←Rd1, Rd4←Rd0
+								//Rd5←Rd1, Rd4←Rd0
 						break;
 
 					case STOP:
