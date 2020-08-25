@@ -112,7 +112,10 @@ public class CPU {
 						break;
 
 					case STX: // [Rd] ←Rs
-
+						if (isLegal(registers[instrucionRegister.r1])) {
+							memory[registers[instrucionRegister.r1]].param = registers[instrucionRegister.r2];
+						}
+						programCounter++;
 						break;
 
 					case SWAP: //Rd7←Rd3, Rd6←Rd2,
