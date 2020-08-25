@@ -39,7 +39,6 @@ public class CPU {
 				// EXECUTA INSTRUCAO NO ir
 				switch (instrucionRegister.opCode) {
 					case JMP: // PC ← k
-
 						break;
 
 					case JMPI: // PC ← Rs
@@ -65,23 +64,21 @@ public class CPU {
 					case SUBI: // Rd ← Rd – k
 
 						break;
-					case ANDI: 	// Rd ←Rd AND k
 
-						break;
-
-					case ORI: // Rd ←Rd OR k
-
-						break;
-
+					//implementado pelo professor
 					case LDI: // Rd ← k
 						registers[instrucionRegister.r1] = instrucionRegister.param;
 						programCounter++;
 						break;
 
 					case LDD: // Rd ← [A]
+						if (isLegal(instrucionRegister.param)) {
+							registers[instrucionRegister.r1] = this.memory[instrucionRegister.param].param;
+							programCounter++;
+							break;
+						}
 
-						break;
-
+					//implementado pelo professor
 					case STD: // [A] ← Rs
 						if (isLegal(instrucionRegister.param)) {
 							memory[instrucionRegister.param].opCode = Opcode.DADO;
@@ -91,19 +88,25 @@ public class CPU {
 						break;
 
 					case ADD: // Rd ← Rd + Rs
-
+						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] + registers[instrucionRegister.r2];
+						programCounter++;
 						break;
 
 					case SUB: // Rd ← Rd - Rs
-
+						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] - registers[instrucionRegister.r2];
+						programCounter++;
 						break;
 
 					case MULT: // Rd ← Rd * Rs
-
+						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] * registers[instrucionRegister.r2];
+						programCounter++;
 						break;
 
 					case LDX: // Rd ← [Rs]
-
+						if (isLegal(registers[instrucionRegister.r2])) {
+							registers[instrucionRegister.r1] = memory[registers[instrucionRegister.r2]].param;
+						}
+						programCounter++;
 						break;
 
 					case STX: // [Rd] ←Rs
