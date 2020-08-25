@@ -58,11 +58,13 @@ public class CPU {
 						break;
 
 					case ADDI: // Rd ← Rd + k
-
+						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] + instrucionRegister.param;
+						programCounter++;
 						break;
 
 					case SUBI: // Rd ← Rd – k
-
+						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] - instrucionRegister.param;
+						programCounter++;
 						break;
 
 					//implementado pelo professor
