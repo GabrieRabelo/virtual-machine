@@ -43,7 +43,7 @@ public class CPU {
 						break;
 
 					case JMPI: // PC ← Rs
-
+						programCounter = registers[instrucionRegister.r1];
 						break;
 
 					case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
