@@ -39,6 +39,7 @@ public class CPU {
 				// EXECUTA INSTRUCAO NO ir
 				switch (instrucionRegister.opCode) {
 					case JMP: // PC ← k
+						programCounter = instrucionRegister.param;
 						break;
 
 					case JMPI: // PC ← Rs
@@ -118,8 +119,11 @@ public class CPU {
 						programCounter++;
 						break;
 
-					case SWAP: //Rd7←Rd3, Rd6←Rd2,
-								//Rd5←Rd1, Rd4←Rd0
+					case SWAP: //T ← Rd  Rd ← Rs  Rs ← T Eu não sei se esse T pode ser uma variavel comum ou se será uma LocalStack da CPU
+						int T = registers[instrucionRegister.r1];
+						registers[instrucionRegister.r1] = registers[instrucionRegister.r2];
+						registers[instrucionRegister.r2] = T;
+						programCounter++;
 						break;
 
 					case STOP:
