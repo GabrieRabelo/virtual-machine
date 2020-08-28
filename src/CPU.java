@@ -47,30 +47,51 @@ public class CPU {
 						break;
 
 					case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
-
+						if(registers[instrucionRegister.r1] > 0)
+							programCounter = registers[instrucionRegister.r2];
+						else
+							programCounter++;
 						break;
 
-					case JMPIL: // if Rc < 0 then PC ← Rs
-						// Else PC ← PC +1
+					case JMPIL: // if Rc < 0 then PC ← Rs  // Else PC ← PC +1
+						if(registers[instrucionRegister.r1] < 0)
+							programCounter = registers[instrucionRegister.r2];
+						else
+							programCounter++;
 						break;
 
-					case JMPIE: // if Rc = 0 then PC ← Rs
-						// Else PC ← PC +1
+					case JMPIE: // if Rc = 0 then PC ← Rs // Else PC ← PC +1
+						if(registers[instrucionRegister.r1] == 0)
+							programCounter = registers[instrucionRegister.r2];
+						else
+							programCounter++;
 						break;
 
 					case JMPIM: // PC ← [A]
+						if (isLegal(instrucionRegister.param)) {
+							programCounter = this.memory[instrucionRegister.param].param;
+						}
 						break;
 
-					case JMPIGM: // if Rc > 0 then PC ← [A]
-						//Else PC ← PC +1
+					case JMPIGM: // if Rc > 0 then PC ← [A]  //Else PC ← PC +1
+						if(registers[instrucionRegister.r1] > 0 && isLegal(instrucionRegister.param))
+							programCounter = this.memory[instrucionRegister.param].param;
+						else
+							programCounter++;
 						break;
 
-					case JMPILM: // if Rc < 0 then PC ← [A]
-						//Else PC ← PC +1
+					case JMPILM: // if Rc < 0 then PC ← [A]  //Else PC ← PC +1
+						if(registers[instrucionRegister.r1] < 0 && isLegal(instrucionRegister.param))
+							programCounter = this.memory[instrucionRegister.param].param;
+						else
+							programCounter++;
 						break;
 
-					case JMPIEM: // if Rc = 0 then PC ← [A]
-						//Else PC ← PC +1
+					case JMPIEM: // if Rc = 0 then PC ← [A] //Else PC ← PC +1
+						if(registers[instrucionRegister.r1] == 0 && isLegal(instrucionRegister.param))
+							programCounter = this.memory[instrucionRegister.param].param;
+						else
+							programCounter++;
 						break;
 
 					case ADDI: // Rd ← Rd + k
