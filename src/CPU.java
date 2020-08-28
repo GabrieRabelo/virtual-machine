@@ -58,6 +58,21 @@ public class CPU {
 						// Else PC ← PC +1
 						break;
 
+					case JMPIM: // PC ← [A]
+						break;
+
+					case JMPIGM: // if Rc > 0 then PC ← [A]
+						//Else PC ← PC +1
+						break;
+
+					case JMPILM: // if Rc < 0 then PC ← [A]
+						//Else PC ← PC +1
+						break;
+
+					case JMPIEM: // if Rc = 0 then PC ← [A]
+						//Else PC ← PC +1
+						break;
+
 					case ADDI: // Rd ← Rd + k
 						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] + instrucionRegister.param;
 						programCounter++;
