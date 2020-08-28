@@ -33,14 +33,14 @@ public class VM {
 	/**
 	 * Teste da VM
 	 */
-	public void test1(){
-		Word[] p = new Programas().progMinimo;
+	public void fibonacci(){
+		Word[] p = new Programas().fibonacci;
 		utils.carga(p, mem);
 		cpu.setContext(0, tamMem - 1, 0);
 		System.out.println("---------------------------------- programa carregado ");
-		utils.dump(mem, 0, 15);
+		utils.dump(mem, 0, 16);
 		System.out.println("---------------------------------- após execucao ");
 		cpu.run();
-		utils.dump(mem, 0, 15);
+		utils.dump(mem, 50, 60);
 	}
 }
