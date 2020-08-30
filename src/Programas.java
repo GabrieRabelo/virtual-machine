@@ -42,58 +42,49 @@ public class Programas {
  da sequencia de fibonacci a serem escritos em sequencia a partir de uma posição de
  memoria;*/
 
-//TA ERRADO. Se n entenderem nada, apaga tudo ai kk
 	public Word[] P2 = new Word[] {
 			//Determinada Posição será carregada no início do programa no R5
-			new Word(Opcode.LDI, 5, -1, 10),
-			//se o número for menor que zero, aponta para onde bota -1 na posição 0 e acaba
-			new Word(Opcode.JMPILM, 5, -1, 19),
+			new Word(Opcode.LDI, 5, -1, 1),
+			//se o número for menor que zero, aponta para onde bota -1 na posição 50 e acaba
+			new Word(Opcode.JMPILM, 5, -1, 21),
 
 			//se o número for igual a zero, aponta para onde bota -1 na posição 0 e acaba
-			new Word(Opcode.JMPIEM, 5, -1, 19),
+			new Word(Opcode.JMPIEM, 5, -1, 21),
 
 			//se o número for igual a um, aponta para onde escreve 0 e acaba
-			new Word(Opcode.JMPIEM, 5, -1, 23),
-
-			//se o número for igual a dois, aponta para onde escreve 0 e 1 e acaba
-			new Word(Opcode.JMPIEM, 5, -1, 27),
+            new Word(Opcode.LDI, 1, -1, 1),
+            new Word(Opcode.SUB, 1, 5, -1), //r1 = r1 - r5 (1 -1)
+			new Word(Opcode.JMPIEM, 1, -1, 25),
 
 			//fibonacci de antes
-			new Word(Opcode.LDI, 1, -1, 0),
-			new Word(Opcode.LDI, 2, -1, 1),
-			new Word(Opcode.LDI, 4, -1, 50),
-			new Word(Opcode.STX, 4, 1, -1),
-			new Word(Opcode.ADDI, 4, -1, 1),
-			new Word(Opcode.STX, 4, 2, -1),
-			new Word(Opcode.LDI, 6, -1, 8),
-			new Word(Opcode.SUBI, 4, -1, 1),
-			new Word(Opcode.LDX, 3, 4, 0),
-			new Word(Opcode.ADD, 2, 3, -1),
-			new Word(Opcode.ADDI, 4, -1, 2),
-			new Word(Opcode.STX, 4, 2, -1),
-			new Word(Opcode.SUBI, 5, -1, 1),
-			new Word(Opcode.JMPIG, 5, 6, -1),
+            new Word(Opcode.LDI, 1, -1, 0),
+            new Word(Opcode.LDI, 2, -1, 1),
+            new Word(Opcode.LDI, 4, -1, 50),
+            new Word(Opcode.STX, 4, 1, -1),
+            new Word(Opcode.ADDI, 4, -1, 1),
+            new Word(Opcode.STX, 4, 2, -1),
+            new Word(Opcode.LDI, 6, -1, 13),
+            new Word(Opcode.SUBI, 4, -1, 1),
+            new Word(Opcode.LDX, 3, 4, 0),
+            new Word(Opcode.ADD, 2, 3, -1),
+            new Word(Opcode.ADDI, 4, -1, 2),
+            new Word(Opcode.STX, 4, 2, -1),
+            new Word(Opcode.SUBI, 5, -1, 1),
+            new Word(Opcode.JMPIG, 5, 6, -1),
+            new Word(Opcode.STOP, -1, -1, -1),
 
-	//bota -1 na posição 0 e acaba - posição 19
-			new Word(Opcode.LDI, 1, -1, 0),
+	//bota -1 na posição 0 e acaba - posição 21
+			new Word(Opcode.LDI, 1, -1, 50),
 			new Word(Opcode.LDI, 2, -1, -1),
 			new Word(Opcode.STX, 1, 2, -1),
-			new Word(Opcode.JMPIEM, 1, -1, 34),
-	//escreve 0 e acaba - posição 23
+            new Word(Opcode.STOP, -1, -1, -1),
+	//escreve 0 e acaba - posição 25
 			new Word(Opcode.LDI, 4, -1, 50),
 			new Word(Opcode.LDI, 1, -1, 0),
 			new Word(Opcode.STX, 4, 1, -1),
-			new Word(Opcode.JMPIEM, 1, -1, 34),
-	//escreve 0 e 1 e acaba -posição 27
-			new Word(Opcode.LDI, 1, -1, 0),
-			new Word(Opcode.LDI, 2, -1, 1),
-			new Word(Opcode.LDI, 4, -1, 50),
-			new Word(Opcode.STX, 4, 1, -1),
-			new Word(Opcode.ADDI, 4, -1, 1),
-			new Word(Opcode.STX, 4, 2, -1),
-			new Word(Opcode.JMPIEM, 1, -1, 34),
+            new Word(Opcode.STOP, -1, -1, -1),
 
-			//Fim - posição 34
+			//Fim - posição 29
 			new Word(Opcode.STOP, -1, -1, -1)
 	};
 

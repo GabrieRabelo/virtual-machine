@@ -58,6 +58,7 @@ public class CPU {
 							programCounter = registers[instrucionRegister.r2];
 						else
 							programCounter++;
+                        System.out.println(programCounter);
 						break;
 
 					case JMPIE: // if Rc = 0 then PC ← Rs // Else PC ← PC +1
@@ -65,33 +66,37 @@ public class CPU {
 							programCounter = registers[instrucionRegister.r2];
 						else
 							programCounter++;
+                        System.out.println(programCounter);
 						break;
 
 					case JMPIM: // PC ← [A]
 						if (isLegal(instrucionRegister.param)) {
-							programCounter = this.memory[instrucionRegister.param].param;
+							programCounter = instrucionRegister.param;
 						}
 						break;
 
 					case JMPIGM: // if Rc > 0 then PC ← [A]  //Else PC ← PC +1
 						if(registers[instrucionRegister.r1] > 0 && isLegal(instrucionRegister.param))
-							programCounter = this.memory[instrucionRegister.param].param;
+							programCounter = instrucionRegister.param;
 						else
 							programCounter++;
+                        System.out.println(programCounter);
 						break;
 
 					case JMPILM: // if Rc < 0 then PC ← [A]  //Else PC ← PC +1
 						if(registers[instrucionRegister.r1] < 0 && isLegal(instrucionRegister.param))
-							programCounter = this.memory[instrucionRegister.param].param;
+							programCounter = instrucionRegister.param;
 						else
 							programCounter++;
+                        System.out.println(programCounter);
 						break;
 
 					case JMPIEM: // if Rc = 0 then PC ← [A] //Else PC ← PC +1
-						if(registers[instrucionRegister.r1] == 0 && isLegal(instrucionRegister.param))
-							programCounter = this.memory[instrucionRegister.param].param;
-						else
+						if(registers[instrucionRegister.r1] == 0 && isLegal(instrucionRegister.param)) {
+                            programCounter = instrucionRegister.param;
+                        }else
 							programCounter++;
+                        System.out.println(programCounter);
 						break;
 
 					case ADDI: // Rd ← Rd + k
@@ -133,7 +138,7 @@ public class CPU {
 
 					case SUB: // Rd ← Rd - Rs
 						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] - registers[instrucionRegister.r2];
-						programCounter++;
+                        programCounter++;
 						break;
 
 					case MULT: // Rd ← Rd * Rs
