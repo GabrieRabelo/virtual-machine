@@ -54,4 +54,16 @@ public class VM {
 		cpu.run();
 		utils.dump(mem, 50, 60);
 	}
+
+	public void P3(){
+		Word[] p = new Programas().P3;
+		utils.carga(p, mem);
+		cpu.setContext(0, tamMem - 1, 0);
+		System.out.println("---------------------------------- programa carregado ");
+		utils.dump(mem, 0, 16);
+		System.out.println("---------------------------------- após execucao ");
+		cpu.run();
+		utils.dump(mem, 50, 60);
+	}
+
 }

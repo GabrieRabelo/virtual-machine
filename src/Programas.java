@@ -88,7 +88,21 @@ public class Programas {
 			new Word(Opcode.STOP, -1, -1, -1)
 	};
 
+	/*dado um inteiro em alguma posição de memória,
+ 	se for negativo armazena -1 na saída;
+ 	se for positivo responde o fatorial do número na saída*/
+	public Word[] P3 = new Word[]{
+		new Word(Opcode.LDI,1,-1,5),
+		new Word(Opcode.LDI,2,-1,1),
+		//loop
+		new Word(Opcode.MULT,2,1,-1),
+		new Word(Opcode.LDI,3,-1,1),
+		new Word(Opcode.SUB,1,3,-1),
+		new Word(Opcode.JMPIGM,1,-1,2),
 
+		new Word(Opcode.STD,2,-1,50),
+		new Word(Opcode.STOP,-1,-1,-1),
+	};
 
 
 }
