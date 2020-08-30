@@ -58,4 +58,9 @@ public class VM {
 		run(p);
 	}
 
+	public void P4(){
+		Word[] p = new Programas().P4;
+		run(p);
+	}
+
 }

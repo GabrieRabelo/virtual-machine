@@ -109,4 +109,15 @@ public class Programas {
 
 	};
 
+/*para um N definido (5 por exemplo)
+o programa ordena um vetor de N números em alguma posição de memória;
+ordena usando bubble sort
+loop ate que não swap nada
+passando pelos N valores
+faz swap de vizinhos se da esquerda maior que da direita*/
+	public Word[] P4 = new Word[]{
+
+
+	};
+
 }
