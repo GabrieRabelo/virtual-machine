@@ -116,8 +116,61 @@ loop ate que não swap nada
 passando pelos N valores
 faz swap de vizinhos se da esquerda maior que da direita*/
 	public Word[] P4 = new Word[]{
+		new Word(Opcode.DADO,5,-1,50), //guarda o length do array na memoria[50]
 
+		//guarda item por item do array em cada posiçao de memoria.
+		new Word(Opcode.DADO,1,-1,51),
+		new Word(Opcode.DADO,5,-1,52),
+		new Word(Opcode.DADO,8,-1,53),
+		new Word(Opcode.DADO,2,-1,54),
+		new Word(Opcode.DADO,3,-1,55),
 
+		//pre-execuçao
+		new Word(Opcode.LDD,1,-1,50),
+		new Word(Opcode.LDI,2,-1,0),
+		new Word(Opcode.LDI,3,-1,0),
+
+		//loop1
+		new Word(Opcode.LDI,5,-1,0),
+		new Word(Opcode.ADD,5,2,0),
+		new Word(Opcode.SUB,5,1,0),
+		new Word(Opcode.JMPIGM,5,-1,39), // vai para o stop
+		new Word(Opcode.JMPIEM,5,-1,39), // vai para o stop
+		new Word(Opcode.ADDI,2,-1,1),  // i ++
+
+		//loop2
+		new Word(Opcode.LDI,5,-1,0),
+		new Word(Opcode.ADD,5,3,0),
+		new Word(Opcode.SUB,5,1,0),
+		new Word(Opcode.JMPIEM,5,-1,9), //loop1 esta na linha 9
+		new Word(Opcode.JMPIGM,5,-1,9), //loop1 esta na linha 9
+
+		new Word(Opcode.LDI, 4,-1,51),
+		new Word(Opcode.ADD,4,3,0),
+		new Word(Opcode.LDI, 5,-1,1),
+		new Word(Opcode.ADD,5,4,0),
+		new Word(Opcode.LDX, 4,4,-1),
+		new Word(Opcode.LDX, 5,5,-1),
+
+		new Word(Opcode.ADDI,3,-1,1), // j ++
+
+		new Word(Opcode.LDI,6,-1,0),
+		new Word(Opcode.ADD,6,5,0),
+		new Word(Opcode.SUB,6,4,1),
+		new Word(Opcode.JMPILM,6,-1,32), //vai para o swap
+		new Word(Opcode.JMP,-1,-1, 15), // se nao, vai para o loop2
+
+		//swap
+		new Word(Opcode.SWAP,5,4,-1),
+		new Word(Opcode.LDI,6,-1,55),
+		new Word(Opcode.ADD,6,3,-1),
+		new Word(Opcode.STX,6,4,-1),
+		new Word(Opcode.ADDI,6,-1,1),
+		new Word(Opcode.STX,6,5,-1),
+		new Word(Opcode.JMP,-1,-1,15), //volta para o loop2 apos o swap
+
+		//stop
+		new Word(Opcode.STOP,-1,-1,-1),
 	};
 
 }

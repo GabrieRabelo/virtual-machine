@@ -24,6 +24,7 @@ public class CPU {
 	}
 
 	private boolean isLegal(int e) {
+//		System.out.println("About to validate address " + e);
 		if ((e < base) || (e > limite)) {
 			interrupts = Interrupts.INT_ENDERECO_INVALIDO;
 			return false;
@@ -58,7 +59,7 @@ public class CPU {
 							programCounter = registers[instrucionRegister.r2];
 						else
 							programCounter++;
-                        System.out.println(programCounter);
+//                        System.out.println(programCounter);
 						break;
 
 					case JMPIE: // if Rc = 0 then PC ← Rs // Else PC ← PC +1
@@ -66,7 +67,7 @@ public class CPU {
 							programCounter = registers[instrucionRegister.r2];
 						else
 							programCounter++;
-                        System.out.println(programCounter);
+//                        System.out.println(programCounter);
 						break;
 
 					case JMPIM: // PC ← [A]
@@ -80,7 +81,7 @@ public class CPU {
 							programCounter = instrucionRegister.param;
 						else
 							programCounter++;
-                        System.out.println(programCounter);
+//                        System.out.println(programCounter);
 						break;
 
 					case JMPILM: // if Rc < 0 then PC ← [A]  //Else PC ← PC +1
@@ -88,7 +89,7 @@ public class CPU {
 							programCounter = instrucionRegister.param;
 						else
 							programCounter++;
-                        System.out.println(programCounter);
+//                        System.out.println(programCounter);
 						break;
 
 					case JMPIEM: // if Rc = 0 then PC ← [A] //Else PC ← PC +1
@@ -96,7 +97,7 @@ public class CPU {
                             programCounter = instrucionRegister.param;
                         }else
 							programCounter++;
-                        System.out.println(programCounter);
+//                        System.out.println(programCounter);
 						break;
 
 					case ADDI: // Rd ← Rd + k
@@ -117,6 +118,7 @@ public class CPU {
 
 					case LDD: // Rd ← [A]
 						if (isLegal(instrucionRegister.param)) {
+							System.out.println(instrucionRegister.param + " is legal");
 							registers[instrucionRegister.r1] = this.memory[instrucionRegister.param].param;
 							programCounter++;
 							break;
@@ -154,7 +156,9 @@ public class CPU {
 						break;
 
 					case STX: // [Rd] ←Rs
+						System.out.println("Prestes a colocar o valor " + registers[instrucionRegister.r2] + " no endereco " + registers[instrucionRegister.r1]);
 						if (isLegal(registers[instrucionRegister.r1])) {
+							memory[registers[instrucionRegister.r1]].opCode = Opcode.DADO;
 							memory[registers[instrucionRegister.r1]].param = registers[instrucionRegister.r2];
 						}
 						programCounter++;
@@ -171,8 +175,12 @@ public class CPU {
 						interrupts = Interrupts.INT_STOP;
 						break;
 
-					case DADO:
-
+					case DADO: //[A] <- [Rd]
+						if (isLegal(instrucionRegister.param)) {
+							memory[instrucionRegister.param].opCode = Opcode.DADO;
+							memory[instrucionRegister.param].param = instrucionRegister.r1;
+						}
+						programCounter ++;
 						break;
 
 					default:
