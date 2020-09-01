@@ -118,7 +118,6 @@ public class CPU {
 
 					case LDD: // Rd ← [A]
 						if (isLegal(instrucionRegister.param)) {
-							System.out.println(instrucionRegister.param + " is legal");
 							registers[instrucionRegister.r1] = this.memory[instrucionRegister.param].param;
 							programCounter++;
 							break;
@@ -156,7 +155,6 @@ public class CPU {
 						break;
 
 					case STX: // [Rd] ←Rs
-						System.out.println("Prestes a colocar o valor " + registers[instrucionRegister.r2] + " no endereco " + registers[instrucionRegister.r1]);
 						if (isLegal(registers[instrucionRegister.r1])) {
 							memory[registers[instrucionRegister.r1]].opCode = Opcode.DADO;
 							memory[registers[instrucionRegister.r1]].param = registers[instrucionRegister.r2];
