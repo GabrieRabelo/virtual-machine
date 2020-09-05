@@ -14,6 +14,10 @@
 
 import enums.Opcode;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class VM {
 
 	public int tamMem;    
@@ -43,24 +47,46 @@ public class VM {
 		utils.dump(mem, 50, 60);
 	}
 
-	public void fibonacci(){
-		Word[] p = new Programas().fibonacci;
-		run(p);
+	public void assembly(String arquivo){
+		String path = "src/in/" + arquivo;
+		int size = getFileSize(path);
+		Word[] programa = new Word[size];
+		int line = 0;
+		try {
+			File myObj = new File(path);
+			Scanner myReader = new Scanner(myObj);
+			while (myReader.hasNextLine()) {
+				String[] data = myReader.nextLine().split(" ");
+				Opcode code = Opcode.valueOf(data[0]);
+				int r1 = Integer.parseInt(data[1]);
+				int r2 = Integer.parseInt(data[2]);
+				int param = Integer.parseInt(data[3]);
+				programa[line] = new Word(code, r1, r2, param);
+				line++;
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+		run(programa);
 	}
 
-	public void P2(){
-		Word[] p = new Programas().P2;
-		run(p);
-	}
-
-	public void P3(){
-		Word[] p = new Programas().P3;
-		run(p);
-	}
-
-	public void P4(){
-		Word[] p = new Programas().P4;
-		run(p);
+	private int getFileSize(String path) {
+		int line = 0;
+		try {
+			File myObj = new File(path);
+			Scanner myReader = new Scanner(myObj);
+			while (myReader.hasNextLine()) {
+				myReader.nextLine();
+				line++;
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+		return line;
 	}
 
 }
