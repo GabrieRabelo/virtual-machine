@@ -56,7 +56,7 @@ public class VM {
 			File myObj = new File(path);
 			Scanner myReader = new Scanner(myObj);
 			while (myReader.hasNextLine()) {
-				String[] data = myReader.nextLine().split(" ");
+				String[] data = myReader.nextLine().replaceAll("\\s+","").split(",");
 				Opcode code = Opcode.valueOf(data[0]);
 				int r1 = Integer.parseInt(data[1]);
 				int r2 = Integer.parseInt(data[2]);
