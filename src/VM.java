@@ -45,6 +45,7 @@ public class VM {
 		System.out.println("---------------------------------- após execucao ");
 		cpu.run();
 		utils.dump(mem, 50, 60);
+		// Aqui iremos também chamar uma nova classe, o GM (Gerente de Memória) para desalocar a memória
 	}
 
 	public void assembly(String arquivo){
