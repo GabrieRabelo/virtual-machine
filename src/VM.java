@@ -16,6 +16,8 @@ import enums.Opcode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class VM {
@@ -24,6 +26,7 @@ public class VM {
     public Word[] mem;
     public CPU cpu;
     public GM gm;
+    public HashMap<Integer, int[]> proccesses;
 
     public VM(){
 		tamMem = 1024;
@@ -32,6 +35,7 @@ public class VM {
 			mem[i] = new Word(Opcode.___,-1,-1,-1);
 		cpu = new CPU(mem);
 		gm = new GM(tamMem);
+		proccesses = new HashMap();
 	}
 
 	/**
@@ -106,7 +110,10 @@ public class VM {
 	private void carga(Word[] p, Word[] m) {
 		//Aqui teremos uma lista de processos. No caso, pode ser um dict com id, numero do processo e lista de páginas da memória. Talvez o carga pode retornar esse dict para a VM
 		// Aqui na carga iremos também chamar uma nova classe, o GM (Gerente de Memória) para alocarmos a memória]
-		gm.aloca(p.length);
+		int[] allocated = gm.alloc(p.length);
+
+		proccesses.put(1, allocated); //hard code.
+
 		for (int i = 0; i < p.length; i++) {
 			m[i].opCode = p[i].opCode;     m[i].r1 = p[i].r1;     m[i].r2 = p[i].r2;     m[i].param = p[i].param;
 		}
