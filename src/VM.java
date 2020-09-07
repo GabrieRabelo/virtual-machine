@@ -22,8 +22,8 @@ public class VM {
 
 	public int tamMem;    
     public Word[] mem;
-    public CPU cpu;    
-    public Utils utils;
+    public CPU cpu;
+    public GM gm;
 
     public VM(){
 		tamMem = 1024;
@@ -31,20 +31,20 @@ public class VM {
 		for (int i=0; i<tamMem; i++)
 			mem[i] = new Word(Opcode.___,-1,-1,-1);
 		cpu = new CPU(mem);
-		utils = new Utils();
+		gm = new GM(tamMem);
 	}
 
 	/**
 	 * Teste da VM
 	 */
 	private void run(Word[] p) {
-		utils.carga(p, mem);
+		carga(p, mem);
 		cpu.setContext(0, tamMem - 1, 0);
 		System.out.println("---------------------------------- programa carregado ");
-		utils.dump(mem, 0, 16);
+		dump(mem, 0, 16);
 		System.out.println("---------------------------------- após execucao ");
 		cpu.run();
-		utils.dump(mem, 50, 60);
+		dump(mem, 50, 60);
 		// Aqui iremos também chamar uma nova classe, o GM (Gerente de Memória) para desalocar a memória
 	}
 
@@ -88,6 +88,28 @@ public class VM {
 			e.printStackTrace();
 		}
 		return line;
+	}
+
+	//utils
+	private void dump(Word w) {
+		System.out.print("[ ");
+		System.out.print(w.opCode); System.out.print(", ");
+		System.out.print(w.r1);  System.out.print(", ");
+		System.out.print(w.r2);  System.out.print(", ");
+		System.out.print(w.param);   System.out.println("  ] ");
+	}
+	private void dump(Word[] m, int ini, int fim) {
+		for (int i = ini; i < fim; i++) {
+			System.out.print(i); System.out.print(":  ");  dump(m[i]);
+		}
+	}
+	private void carga(Word[] p, Word[] m) {
+		//Aqui teremos uma lista de processos. No caso, pode ser um dict com id, numero do processo e lista de páginas da memória. Talvez o carga pode retornar esse dict para a VM
+		// Aqui na carga iremos também chamar uma nova classe, o GM (Gerente de Memória) para alocarmos a memória]
+		gm.aloca(p.length);
+		for (int i = 0; i < p.length; i++) {
+			m[i].opCode = p[i].opCode;     m[i].r1 = p[i].r1;     m[i].r2 = p[i].r2;     m[i].param = p[i].param;
+		}
 	}
 
 }
