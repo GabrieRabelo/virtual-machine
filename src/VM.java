@@ -25,8 +25,8 @@ public class VM {
 	public int tamMem;    
     public Word[] mem;
     public CPU cpu;
-    public GM gm;
-    public HashMap<Integer, int[]> proccesses;
+//    public GM gm; vai para a classe OS
+//    public HashMap<Integer, int[]> proccesses; vai para a classe OS em forma de Linked list, a principio
 
     public VM(){
 		tamMem = 1024;
@@ -116,7 +116,7 @@ public class VM {
 
 		for (int i = 0; i < p.length; i++) {
 			m[i].opCode = p[i].opCode;     m[i].r1 = p[i].r1;     m[i].r2 = p[i].r2;     m[i].param = p[i].param;
-		}
+		} 	
 	}
 
 }
