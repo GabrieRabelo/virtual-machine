@@ -37,8 +37,7 @@ public class VM {
 	/**
 	 * Teste da VM
 	 */
-	private void run(Word[] p) {
-		carga(p, mem);
+	public void run(Word[] p) {
 		cpu.setContext(0, tamMem - 1, 0);
 		System.out.println("---------------------------------- programa carregado ");
 		dump(mem, 0, 16);
@@ -48,7 +47,7 @@ public class VM {
 		// Aqui iremos também chamar uma nova classe, o GM (Gerente de Memória) para desalocar a memória
 	}
 
-	public void assembly(String arquivo){
+	public Word[] assembly(String arquivo){
 		String path = "src/in/" + arquivo;
 		int size = getFileSize(path);
 		Word[] programa = new Word[size];
@@ -70,7 +69,7 @@ public class VM {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
-		run(programa);
+		return programa;
 	}
 
 	private int getFileSize(String path) {
@@ -104,15 +103,4 @@ public class VM {
 		}
 	}
 
-	private void carga(Word[] p, Word[] m) {
-		//Aqui teremos uma lista de processos. No caso, pode ser um dict com id, numero do processo e lista de páginas da memória. Talvez o carga pode retornar esse dict para a VM
-		// Aqui na carga iremos também chamar uma nova classe, o GM (Gerente de Memória) para alocarmos a memória]
-		int[] allocated = gm.alloc(p.length);
-
-		proccesses.put(1, allocated); //hard code.
-
-		for (int i = 0; i < p.length; i++) {
-			m[i].opCode = p[i].opCode;     m[i].r1 = p[i].r1;     m[i].r2 = p[i].r2;     m[i].param = p[i].param;
-		}
-	}
 }

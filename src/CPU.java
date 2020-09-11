@@ -16,6 +16,11 @@ public class CPU {
 		registers = new int[8];
 	}
 
+	//Implementar função de tradução de memória (não sei se é void)
+	public void translateMemory(int position){
+
+	}
+
 	public void setContext(int base, int limite, int programCounter) {
 		this.base = base;
 		this.limite = limite;
