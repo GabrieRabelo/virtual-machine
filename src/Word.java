@@ -9,4 +9,8 @@ public class Word { 	// cada posicao da memoria ee uma plavra, e tem uma instruc
 	public Word(Opcode opCode, int r1, int r2, int param) {
 		this.opCode = opCode;   this.r1 = r1;    this.r2 = r2;	this.param = param;
 	}
+
+	public String toString() {
+		return "[ " + opCode + ", " + r1 + ", " + r2 + ", " + param + " ]";
+	}
 }

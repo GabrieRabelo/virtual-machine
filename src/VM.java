@@ -39,11 +39,9 @@ public class VM {
 	 */
 	public void run(PCB proccess) {
 		cpu.setContext(0, tamMem - 1, proccess.getAllocatedPages(), 0);
-		System.out.println("---------------------------------- programa carregado ");
-		dump(mem, 0, 32);
-		System.out.println("---------------------------------- após execucao ");
+		System.out.println("---------------------------------- memory dump ");
 		cpu.run();
-		dump(mem, 50, 60);
+		dump(0, 128);
 		// Aqui iremos também chamar uma nova classe, o GM (Gerente de Memória) para desalocar a memória
 	}
 
@@ -89,18 +87,9 @@ public class VM {
 		return line;
 	}
 
-	//utils
-	public void dump(Word w) {
-		System.out.print("[ ");
-		System.out.print(w.opCode); System.out.print(", ");
-		System.out.print(w.r1);  System.out.print(", ");
-		System.out.print(w.r2);  System.out.print(", ");
-		System.out.print(w.param);   System.out.println("  ] ");
-	}
-	public void dump(Word[] m, int ini, int fim) {
+	public void dump(int ini, int fim) {
 		for (int i = ini; i < fim; i++) {
-			System.out.print(i); System.out.print(":  ");  dump(m[i]);
+			System.out.println(i + ": " + mem[i]);
 		}
 	}
-
 }
