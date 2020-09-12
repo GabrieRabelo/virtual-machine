@@ -37,8 +37,8 @@ public class VM {
 	/**
 	 * Teste da VM
 	 */
-	public void run(Word[] p) {
-		cpu.setContext(0, tamMem - 1, 0);
+	public void run(PCB proccess) {
+		cpu.setContext(0, tamMem - 1, proccess.getAllocatedPages(), 0);
 		System.out.println("---------------------------------- programa carregado ");
 		dump(mem, 0, 16);
 		System.out.println("---------------------------------- após execucao ");

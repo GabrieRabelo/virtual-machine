@@ -10,6 +10,7 @@ public class CPU {
 	private int base;
 	private int limite;
 	private Word[] memory;
+	private int[] allocatedPages;
 
 	public CPU(Word[] memory) {
 		this.memory = memory;
@@ -17,13 +18,14 @@ public class CPU {
 	}
 
 	//Implementar função de tradução de memória (não sei se é void)
-	public void translateMemory(int position){
-
+	public int translateMemory(int address){
+		return (allocatedPages[(address / 16)] * 16) + (address % 16);
 	}
 
-	public void setContext(int base, int limite, int programCounter) {
+	public void setContext(int base, int limite, int[] allocatedPages, int programCounter) {
 		this.base = base;
 		this.limite = limite;
+		this.allocatedPages = allocatedPages;
 		this.programCounter = programCounter;
 		this.interrupts = Interrupts.NO_INTERRUPT;
 	}
@@ -40,8 +42,8 @@ public class CPU {
 	public void run() {
 		while (true) {
 			//Fetch
-			if (isLegal(programCounter)) {
-				instrucionRegister = memory[programCounter];
+			if (isLegal(translateMemory(programCounter))) {
+				instrucionRegister = memory[translateMemory(programCounter)];
 				// EXECUTA INSTRUCAO NO ir
 				switch (instrucionRegister.opCode) {
 					case JMP: // PC ← k

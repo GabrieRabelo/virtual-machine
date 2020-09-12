@@ -1,9 +1,15 @@
+/*
+RATE MY OS
+ */
 public class Application {
 	public static void main(String[] args) {
-		String arquivo = "p1.txt";
 
 		OS os = new OS();
-		os.carga(arquivo);
-		//os.run();
+//		os.carga("p1.txt");
+//		os.carga("p2.txt");
+//		os.carga("p3.txt");
+		os.carga("p4.txt");
+
+		os.run(0);
 	}
 }
