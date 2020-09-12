@@ -23,6 +23,7 @@ public class OS {
     // Função para dizer pro OS mandar a VM executar X processo. Ainda n sei ao certo a melhor maneira de fazer isso, então deixei direto na carga
     public void run(int process_id){
         vm.run(processos.get(process_id));
+        gm.desaloca(processos.get(process_id));
     }
 
 }

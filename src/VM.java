@@ -40,7 +40,7 @@ public class VM {
 	public void run(PCB proccess) {
 		cpu.setContext(0, tamMem - 1, proccess.getAllocatedPages(), 0);
 		System.out.println("---------------------------------- programa carregado ");
-		dump(mem, 0, 16);
+		dump(mem, 0, 32);
 		System.out.println("---------------------------------- após execucao ");
 		cpu.run();
 		dump(mem, 50, 60);
@@ -90,14 +90,14 @@ public class VM {
 	}
 
 	//utils
-	private void dump(Word w) {
+	public void dump(Word w) {
 		System.out.print("[ ");
 		System.out.print(w.opCode); System.out.print(", ");
 		System.out.print(w.r1);  System.out.print(", ");
 		System.out.print(w.r2);  System.out.print(", ");
 		System.out.print(w.param);   System.out.println("  ] ");
 	}
-	private void dump(Word[] m, int ini, int fim) {
+	public void dump(Word[] m, int ini, int fim) {
 		for (int i = ini; i < fim; i++) {
 			System.out.print(i); System.out.print(":  ");  dump(m[i]);
 		}

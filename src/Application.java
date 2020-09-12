@@ -5,10 +5,10 @@ public class Application {
 	public static void main(String[] args) {
 
 		OS os = new OS();
-//		os.carga("p1.txt");
+		os.carga("p1.txt");
 //		os.carga("p2.txt");
 //		os.carga("p3.txt");
-		os.carga("p4.txt");
+//		os.carga("p4.txt");
 
 		os.run(0);
 	}

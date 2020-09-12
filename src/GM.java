@@ -1,3 +1,5 @@
+import enums.Opcode;
+
 //Classe gerente de memória
 public class GM {
 
@@ -52,12 +54,16 @@ public class GM {
         return allocatedFrames;
     }
 
-    //Como sabemos o que deve ser desalocado? Acho que passamos o dict de processos
-    public void desaloca(){
-
+    public void desaloca(PCB processo){
+        int[] pages = processo.getAllocatedPages();
+        for(int i = 0; i < pages.length; i ++) {
+            freeFrames[pages[i]] = true;
+            for (int j = pageSize * pages[i]; j < pageSize * (pages[i] + 1); j++) {
+                mem[j].opCode = Opcode.___;
+                mem[j].r1 = -1;
+                mem[j].r2 = -1;
+                mem[j].param = -1;
+            }
+        }
     }
-
-//    public String toString(){
-//        return memorySize + " " + pageSize + " " + numberOfFrames;
-//    }
 }
