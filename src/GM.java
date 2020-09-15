@@ -25,7 +25,7 @@ public class GM {
 
     //Como nós estamos escrevendo o código em txt, esse número de palavras pode ser o número de linhas do txt
     public int[] alloc(Word[] words){
-        int pages = words.length/pageSize;
+        int pages = words[words.length-1].r1/pageSize;
         if(words.length%pageSize>0) pages++;
         int[] allocatedFrames = new int[pages];
         int allocated_i = 0;
