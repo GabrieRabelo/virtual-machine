@@ -17,7 +17,6 @@ public class CPU {
 		registers = new int[8];
 	}
 
-	//Implementar função de tradução de memória (não sei se é void)
 	public int translateMemory(int address){
 		return (allocatedPages[(address / 16)] * 16) + (address % 16);
 	}
@@ -33,6 +32,19 @@ public class CPU {
 	private boolean isLegal(int e) {
 //		System.out.println("About to validate address " + e);
 		if ((e < base) || (e > limite)) {
+			interrupts = Interrupts.INT_ENDERECO_INVALIDO;
+			return false;
+		}
+		//Check if the adress is in a legal page
+		int page = e/16;
+		boolean isLegal = false;
+		for(int i =0; i< allocatedPages.length; i++){
+			if (page == allocatedPages[i]) {
+				isLegal = true;
+				break;
+			}
+		}
+		if(!isLegal){
 			interrupts = Interrupts.INT_ENDERECO_INVALIDO;
 			return false;
 		}
