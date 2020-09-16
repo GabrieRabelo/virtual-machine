@@ -41,7 +41,7 @@ public class VM {
 		cpu.setContext(0, tamMem - 1, proccess.getAllocatedPages(), 0);
 		System.out.println("---------------------------------- memory dump ");
 		cpu.run();
-		dump(0, 128);
+		dump(0, 180);
 		// Aqui iremos também chamar uma nova classe, o GM (Gerente de Memória) para desalocar a memória
 	}
 

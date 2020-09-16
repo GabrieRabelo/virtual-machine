@@ -201,8 +201,8 @@ public class CPU {
 
 					case DADO: //[A] <- [Rd]
 						if (isLegal(translateMemory(instrucionRegister.param))) {
-							memory[instrucionRegister.param].opCode = Opcode.DADO;
-							memory[instrucionRegister.param].param = instrucionRegister.r1;
+							memory[translateMemory(instrucionRegister.param)].opCode = Opcode.DADO;
+							memory[translateMemory(instrucionRegister.param)].param = instrucionRegister.r1;
 						}
 						programCounter ++;
 						break;
