@@ -10,15 +10,22 @@ public class CPU {
 	private int base;
 	private int limite;
 	private Word[] memory;
+	private int[] allocatedPages;
 
 	public CPU(Word[] memory) {
 		this.memory = memory;
 		registers = new int[8];
 	}
 
-	public void setContext(int base, int limite, int programCounter) {
+	public int translateMemory(int address){
+		System.out.println(address);
+		return (allocatedPages[(address / 16)] * 16) + (address % 16);
+	}
+
+	public void setContext(int base, int limite, int[] allocatedPages, int programCounter) {
 		this.base = base;
 		this.limite = limite;
+		this.allocatedPages = allocatedPages;
 		this.programCounter = programCounter;
 		this.interrupts = Interrupts.NO_INTERRUPT;
 	}
@@ -29,14 +36,32 @@ public class CPU {
 			interrupts = Interrupts.INT_ENDERECO_INVALIDO;
 			return false;
 		}
+		//Check if the adress is in a legal page
+		int page = e/16;
+		boolean isLegal = false;
+		for(int i =0; i< allocatedPages.length; i++){
+			if (page == allocatedPages[i]) {
+				isLegal = true;
+				break;
+			}
+		}
+		if(!isLegal){
+			interrupts = Interrupts.INT_ENDERECO_INVALIDO;
+			System.out.println("Páginas alocadas: \n");
+			for(int i =0; i< allocatedPages.length; i++){
+				System.out.println(allocatedPages[i]);
+			}
+			return false;
+		}
 		return true;
 	}
 
 	public void run() {
 		while (true) {
 			//Fetch
-			if (isLegal(programCounter)) {
-				instrucionRegister = memory[programCounter];
+			if (isLegal(translateMemory(programCounter))) {
+				instrucionRegister = memory[translateMemory(programCounter)];
+				System.out.println(instrucionRegister);
 				// EXECUTA INSTRUCAO NO ir
 				switch (instrucionRegister.opCode) {
 					case JMP: // PC ← k
@@ -77,7 +102,7 @@ public class CPU {
 						break;
 
 					case JMPIGM: // if Rc > 0 then PC ← [A]  //Else PC ← PC +1
-						if(registers[instrucionRegister.r1] > 0 && isLegal(instrucionRegister.param))
+						if(registers[instrucionRegister.r1] > 0 && isLegal(translateMemory(instrucionRegister.param)))
 							programCounter = instrucionRegister.param;
 						else
 							programCounter++;
@@ -85,7 +110,7 @@ public class CPU {
 						break;
 
 					case JMPILM: // if Rc < 0 then PC ← [A]  //Else PC ← PC +1
-						if(registers[instrucionRegister.r1] < 0 && isLegal(instrucionRegister.param))
+						if(registers[instrucionRegister.r1] < 0 && isLegal(translateMemory(instrucionRegister.param)))
 							programCounter = instrucionRegister.param;
 						else
 							programCounter++;
@@ -93,7 +118,7 @@ public class CPU {
 						break;
 
 					case JMPIEM: // if Rc = 0 then PC ← [A] //Else PC ← PC +1
-						if(registers[instrucionRegister.r1] == 0 && isLegal(instrucionRegister.param)) {
+						if(registers[instrucionRegister.r1] == 0 && isLegal(translateMemory(instrucionRegister.param))) {
                             programCounter = instrucionRegister.param;
                         }else
 							programCounter++;
@@ -117,17 +142,17 @@ public class CPU {
 						break;
 
 					case LDD: // Rd ← [A]
-						if (isLegal(instrucionRegister.param)) {
-							registers[instrucionRegister.r1] = this.memory[instrucionRegister.param].param;
+						if (isLegal(translateMemory(instrucionRegister.param))) {
+							registers[instrucionRegister.r1] = this.memory[translateMemory(instrucionRegister.param)].param;
 							programCounter++;
 							break;
 						}
 
 					//implementado pelo professor
 					case STD: // [A] ← Rs
-						if (isLegal(instrucionRegister.param)) {
-							memory[instrucionRegister.param].opCode = Opcode.DADO;
-							memory[instrucionRegister.param].param = registers[instrucionRegister.r1];
+						if (isLegal(translateMemory(instrucionRegister.param))) {
+							memory[translateMemory(instrucionRegister.param)].opCode = Opcode.DADO;
+							memory[translateMemory(instrucionRegister.param)].param = registers[instrucionRegister.r1];
 							programCounter++;
 						}
 						break;
@@ -148,16 +173,17 @@ public class CPU {
 						break;
 
 					case LDX: // Rd ← [Rs]
-						if (isLegal(registers[instrucionRegister.r2])) {
-							registers[instrucionRegister.r1] = memory[registers[instrucionRegister.r2]].param;
+						if (isLegal(translateMemory(registers[instrucionRegister.r2]))) {
+							registers[instrucionRegister.r1] = memory[translateMemory(registers[instrucionRegister.r2])].param;
 						}
 						programCounter++;
 						break;
 
 					case STX: // [Rd] ←Rs
-						if (isLegal(registers[instrucionRegister.r1])) {
-							memory[registers[instrucionRegister.r1]].opCode = Opcode.DADO;
-							memory[registers[instrucionRegister.r1]].param = registers[instrucionRegister.r2];
+
+						if (isLegal(translateMemory(registers[instrucionRegister.r1]))) {
+							memory[translateMemory(registers[instrucionRegister.r1])].opCode = Opcode.DADO;
+							memory[translateMemory(registers[instrucionRegister.r1])].param = registers[instrucionRegister.r2];
 						}
 						programCounter++;
 						break;
@@ -174,9 +200,9 @@ public class CPU {
 						break;
 
 					case DADO: //[A] <- [Rd]
-						if (isLegal(instrucionRegister.param)) {
-							memory[instrucionRegister.param].opCode = Opcode.DADO;
-							memory[instrucionRegister.param].param = instrucionRegister.r1;
+						if (isLegal(translateMemory(instrucionRegister.param))) {
+							memory[translateMemory(instrucionRegister.param)].opCode = Opcode.DADO;
+							memory[translateMemory(instrucionRegister.param)].param = instrucionRegister.r1;
 						}
 						programCounter ++;
 						break;

@@ -25,8 +25,6 @@ public class VM {
 	public int tamMem;    
     public Word[] mem;
     public CPU cpu;
-    public GM gm;
-    public HashMap<Integer, int[]> proccesses;
 
     public VM(){
 		tamMem = 1024;
@@ -34,25 +32,20 @@ public class VM {
 		for (int i=0; i<tamMem; i++)
 			mem[i] = new Word(Opcode.___,-1,-1,-1);
 		cpu = new CPU(mem);
-		gm = new GM(tamMem);
-		proccesses = new HashMap();
 	}
 
 	/**
 	 * Teste da VM
 	 */
-	private void run(Word[] p) {
-		carga(p, mem);
-		cpu.setContext(0, tamMem - 1, 0);
-		System.out.println("---------------------------------- programa carregado ");
-		dump(mem, 0, 16);
-		System.out.println("---------------------------------- após execucao ");
+	public void run(PCB proccess) {
+		cpu.setContext(0, tamMem - 1, proccess.getAllocatedPages(), 0);
+		System.out.println("---------------------------------- memory dump ");
 		cpu.run();
-		dump(mem, 50, 60);
+		dump(0, 180);
 		// Aqui iremos também chamar uma nova classe, o GM (Gerente de Memória) para desalocar a memória
 	}
 
-	public void assembly(String arquivo){
+	public Word[] assembly(String arquivo){
 		String path = "src/in/" + arquivo;
 		int size = getFileSize(path);
 		Word[] programa = new Word[size];
@@ -74,7 +67,7 @@ public class VM {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
-		run(programa);
+		return programa;
 	}
 
 	private int getFileSize(String path) {
@@ -94,29 +87,9 @@ public class VM {
 		return line;
 	}
 
-	//utils
-	private void dump(Word w) {
-		System.out.print("[ ");
-		System.out.print(w.opCode); System.out.print(", ");
-		System.out.print(w.r1);  System.out.print(", ");
-		System.out.print(w.r2);  System.out.print(", ");
-		System.out.print(w.param);   System.out.println("  ] ");
-	}
-	private void dump(Word[] m, int ini, int fim) {
+	public void dump(int ini, int fim) {
 		for (int i = ini; i < fim; i++) {
-			System.out.print(i); System.out.print(":  ");  dump(m[i]);
+			System.out.println(i + ": " + mem[i]);
 		}
 	}
-	private void carga(Word[] p, Word[] m) {
-		//Aqui teremos uma lista de processos. No caso, pode ser um dict com id, numero do processo e lista de páginas da memória. Talvez o carga pode retornar esse dict para a VM
-		// Aqui na carga iremos também chamar uma nova classe, o GM (Gerente de Memória) para alocarmos a memória]
-		int[] allocated = gm.alloc(p.length);
-
-		proccesses.put(1, allocated); //hard code.
-
-		for (int i = 0; i < p.length; i++) {
-			m[i].opCode = p[i].opCode;     m[i].r1 = p[i].r1;     m[i].r2 = p[i].r2;     m[i].param = p[i].param;
-		}
-	}
-
 }
