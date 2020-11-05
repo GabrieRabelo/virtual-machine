@@ -18,7 +18,7 @@ public class CPU {
 	}
 
 	public int translateMemory(int address){
-		System.out.println(address);
+//		System.out.println(address);
 		return (allocatedPages[(address / 16)] * 16) + (address % 16);
 	}
 
@@ -61,7 +61,7 @@ public class CPU {
 			//Fetch
 			if (isLegal(translateMemory(programCounter))) {
 				instrucionRegister = memory[translateMemory(programCounter)];
-				System.out.println(instrucionRegister);
+//				System.out.println(instrucionRegister);
 				// EXECUTA INSTRUCAO NO ir
 				switch (instrucionRegister.opCode) {
 					case JMP: // PC ← k
