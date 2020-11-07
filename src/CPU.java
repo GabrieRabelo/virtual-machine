@@ -56,7 +56,7 @@ public class CPU {
 		return true;
 	}
 
-	public void run() {
+	public Interrupts run() {
 		while (true) {
 			//Fetch
 			if (isLegal(translateMemory(programCounter))) {
@@ -216,7 +216,26 @@ public class CPU {
 			if (interrupts != Interrupts.NO_INTERRUPT) {
 				System.out.print("Interrupcao ");
 				System.out.println(interrupts);
-				break;
+				switch (interrupts){
+					case INT_STOP:
+						//Aqui mandamos para a rotina de tratamento de STOP, onde ele finaliza o processo,
+						// chamando o GP e escalona novo processo
+						return Interrupts.INT_STOP;
+						//rotinas.stop(process_id);
+					case INT_ENDERECO_INVALIDO:
+						//Aqui mandamos para a rotina de tratamento de END_INVALIDO, onde ele finaliza o processo,
+						// chamando o GP e escalona novo processo
+						return Interrupts.INT_ENDERECO_INVALIDO;
+					case INT_INSTRUCAO_INVALIDA:
+						//Aqui mandamos para a rotina de tratamento de INSTRUCAO_INVALIDA, onde ele finaliza o processo,
+						// chamando o GP e escalona novo processo
+						return Interrupts.INT_INSTRUCAO_INVALIDA;
+					case INT_TIMER:
+						//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
+						// chamando o GP e escalona novo processo
+						break;
+				}
+				//break;
 			}
 		}
 	}

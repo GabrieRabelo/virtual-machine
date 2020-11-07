@@ -1,13 +1,16 @@
+import enums.Opcode;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class GP {
-    private VM vm;
     private GM gm;
     private LinkedList<PCB> prontos;
     private static int process_id = 0;
 
-    public GP(VM vm, GM gm, LinkedList<PCB> prontos) {
-        this.vm = vm;
+    public GP(GM gm, LinkedList<PCB> prontos) {
         this.gm = gm;
         this.prontos = prontos;
     }
@@ -16,7 +19,7 @@ public class GP {
         se não ha processo rodando, libera o escalonador*/
 
     public void criaProcesso(String file) {
-        Word[] p = vm.assembly(file);
+        Word[] p = assembly(file);
         int[] allocatedPages = gm.alloc(p);
         PCB processo = new PCB(process_id, allocatedPages);
         process_id++;
@@ -28,6 +31,51 @@ public class GP {
     public void finalizaProcesso (PCB processo){
         gm.desaloca(processo);
         prontos.remove(processo);
+    }
+
+
+    /*Funções auxiliares privadas */
+
+    private Word[] assembly(String arquivo){
+        String path = "src/in/" + arquivo;
+        int size = getFileSize(path);
+        Word[] programa = new Word[size];
+        int line = 0;
+        try {
+            File myObj = new File(path);
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String[] data = myReader.nextLine().replaceAll("\\s+","").split(",");
+                Opcode code = Opcode.valueOf(data[0]);
+                int r1 = Integer.parseInt(data[1]);
+                int r2 = Integer.parseInt(data[2]);
+                int param = Integer.parseInt(data[3]);
+                programa[line] = new Word(code, r1, r2, param);
+                line++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return programa;
+    }
+
+    private int getFileSize(String path) {
+        int line = 0;
+        try {
+            File myObj = new File(path);
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                myReader.nextLine();
+                line++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return line;
     }
 
 }

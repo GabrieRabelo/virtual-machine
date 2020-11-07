@@ -12,6 +12,7 @@
 // Este trabalho tem menos de 200 linhas de código.
 // A VM completa, construida pelo professor, incluindo o programa P1, tem 234 linhas.
 
+import enums.Interrupts;
 import enums.Opcode;
 
 import java.io.File;
@@ -37,55 +38,20 @@ public class VM {
 	/**
 	 * Teste da VM
 	 */
-	public void run(PCB proccess) {
+	public Interrupts run(PCB proccess) {
 		cpu.setContext(0, tamMem - 1, proccess.getAllocatedPages(), 0);
-		System.out.println("---------------------------------- memory dump ");
-		cpu.run();
-		dump(0, 180);
-		// Aqui iremos também chamar uma nova classe, o GM (Gerente de Memória) para desalocar a memória
+		switch(cpu.run()){
+			case INT_STOP:
+				return Interrupts.INT_STOP;
+			case INT_ENDERECO_INVALIDO:
+				return  Interrupts.INT_ENDERECO_INVALIDO;
+			case INT_INSTRUCAO_INVALIDA:
+				return Interrupts.INT_INSTRUCAO_INVALIDA;
+		}
+		return Interrupts.INT_TIMER;
 	}
 
-	public Word[] assembly(String arquivo){
-		String path = "src/in/" + arquivo;
-		int size = getFileSize(path);
-		Word[] programa = new Word[size];
-		int line = 0;
-		try {
-			File myObj = new File(path);
-			Scanner myReader = new Scanner(myObj);
-			while (myReader.hasNextLine()) {
-				String[] data = myReader.nextLine().replaceAll("\\s+","").split(",");
-				Opcode code = Opcode.valueOf(data[0]);
-				int r1 = Integer.parseInt(data[1]);
-				int r2 = Integer.parseInt(data[2]);
-				int param = Integer.parseInt(data[3]);
-				programa[line] = new Word(code, r1, r2, param);
-				line++;
-			}
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		}
-		return programa;
-	}
 
-	private int getFileSize(String path) {
-		int line = 0;
-		try {
-			File myObj = new File(path);
-			Scanner myReader = new Scanner(myObj);
-			while (myReader.hasNextLine()) {
-				myReader.nextLine();
-				line++;
-			}
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		}
-		return line;
-	}
 
 	public void dump(int ini, int fim) {
 		for (int i = ini; i < fim; i++) {

@@ -4,18 +4,20 @@ public class Escalonador {
 
 	private LinkedList<PCB> prontos;
 	private int pointer;
-	private VM vm;
 
-	public Escalonador(LinkedList<PCB> prontos, VM vm) {
+	public Escalonador(LinkedList<PCB> prontos) {
 		this.prontos = prontos;
 		this.pointer = 0;
-		this.vm = vm;
 	}
 
-	public void escalona() {
+	public PCB escalona() {
+		//Esse IF está aqui para o caso de um processo ser desalocado enquanto o pointer estava apontando para a última posição.
+		if(pointer >= prontos.size()){
+			pointer = 0;
+		}
 		PCB pcb = prontos.get(pointer);
 		pointer = (pointer + 1) % prontos.size();
-		vm.run(pcb);
+		return pcb;
 	}
 
 }
