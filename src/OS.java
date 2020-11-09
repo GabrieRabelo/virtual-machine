@@ -42,6 +42,9 @@ public class OS {
                     System.out.println("\n ---------------- Instrução assembly Inválida ---------------- ");
                     rotinas.stop(processo);
                     break;
+                case INT_TIMER:
+                    prontos.add(processo);
+                    break;
             }
         }
 

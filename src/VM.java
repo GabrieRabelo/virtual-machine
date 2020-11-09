@@ -38,8 +38,8 @@ public class VM {
 	/**
 	 * Teste da VM
 	 */
-	public Interrupts run(PCB proccess) {
-		cpu.setContext(0, tamMem - 1, proccess.getAllocatedPages(), 0);
+	public Interrupts run(PCB process) {
+		cpu.setContext(process.getContext());
 		switch(cpu.run()){
 			case INT_STOP:
 				return Interrupts.INT_STOP;
@@ -47,8 +47,10 @@ public class VM {
 				return  Interrupts.INT_ENDERECO_INVALIDO;
 			case INT_INSTRUCAO_INVALIDA:
 				return Interrupts.INT_INSTRUCAO_INVALIDA;
+			default:
+				process.saveContext(cpu.getContext());
+				return Interrupts.INT_TIMER;
 		}
-		return Interrupts.INT_TIMER;
 	}
 
 

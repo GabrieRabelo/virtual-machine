@@ -16,7 +16,9 @@ public class Escalonador {
 			pointer = 0;
 		}
 		PCB pcb = prontos.get(pointer);
+		int old = pointer;
 		pointer = (pointer + 1) % prontos.size();
+		prontos.remove(old);
 		return pcb;
 	}
 

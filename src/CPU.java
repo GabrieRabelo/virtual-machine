@@ -11,6 +11,8 @@ public class CPU {
 	private int limite;
 	private Word[] memory;
 	private int[] allocatedPages;
+	private int quantum;
+
 
 	public CPU(Word[] memory) {
 		this.memory = memory;
@@ -22,11 +24,16 @@ public class CPU {
 		return (allocatedPages[(address / 16)] * 16) + (address % 16);
 	}
 
-	public void setContext(int base, int limite, int[] allocatedPages, int programCounter) {
-		this.base = base;
-		this.limite = limite;
-		this.allocatedPages = allocatedPages;
-		this.programCounter = programCounter;
+	public Context getContext() {
+		return new Context(base,limite,allocatedPages,registers,programCounter,instrucionRegister);
+	}
+
+	public void setContext(Context processContext) {
+		this.base = processContext.getBase();
+		this.limite = processContext.getLimite();
+		this.allocatedPages = processContext.getAllocatedPages();
+		this.programCounter = processContext.getProgramCounter();
+		this.registers = processContext.getRegisters();
 		this.interrupts = Interrupts.NO_INTERRUPT;
 	}
 
@@ -57,12 +64,17 @@ public class CPU {
 	}
 
 	public Interrupts run() {
+		this.quantum = 0;
 		while (true) {
 			//Fetch
 			if (isLegal(translateMemory(programCounter))) {
 				instrucionRegister = memory[translateMemory(programCounter)];
-//				System.out.println(instrucionRegister);
-				// EXECUTA INSTRUCAO NO ir
+
+				quantum ++;
+				if(quantum >= 5){
+					interrupts = Interrupts.INT_TIMER;
+				}
+
 				switch (instrucionRegister.opCode) {
 					case JMP: // PC ← k
 						programCounter = instrucionRegister.param;
@@ -233,7 +245,7 @@ public class CPU {
 					case INT_TIMER:
 						//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
 						// chamando o GP e escalona novo processo
-						break;
+						return Interrupts.INT_TIMER;
 				}
 				//break;
 			}
