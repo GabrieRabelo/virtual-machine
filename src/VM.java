@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.Semaphore;
 
 public class VM {
 
@@ -27,33 +28,13 @@ public class VM {
     public Word[] mem;
     public CPU cpu;
 
-    public VM(){
+    public VM(Semaphore escSemaphore, Semaphore cpuSemaforo, Rotinas rotinas){
 		tamMem = 1024;
 		mem = new Word[tamMem];
 		for (int i=0; i<tamMem; i++)
 			mem[i] = new Word(Opcode.___,-1,-1,-1);
-		cpu = new CPU(mem);
+		cpu = new CPU(mem, escSemaphore, cpuSemaforo, rotinas);
 	}
-
-	/**
-	 * Teste da VM
-	 */
-	public Interrupts run(PCB process) {
-		cpu.setContext(process.getContext());
-		switch(cpu.run()){
-			case INT_STOP:
-				return Interrupts.INT_STOP;
-			case INT_ENDERECO_INVALIDO:
-				return  Interrupts.INT_ENDERECO_INVALIDO;
-			case INT_INSTRUCAO_INVALIDA:
-				return Interrupts.INT_INSTRUCAO_INVALIDA;
-			default:
-				process.saveContext(cpu.getContext());
-				return Interrupts.INT_TIMER;
-		}
-	}
-
-
 
 	public void dump(int ini, int fim) {
 		for (int i = ini; i < fim; i++) {

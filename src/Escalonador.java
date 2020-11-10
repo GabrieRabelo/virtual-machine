@@ -1,25 +1,41 @@
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 
-public class Escalonador {
+public class Escalonador extends Thread {
 
 	private LinkedList<PCB> prontos;
 	private int pointer;
+	private Semaphore escSemaphore;
+	private Semaphore cpuSemaphore;
+	private CPU cpu;
 
-	public Escalonador(LinkedList<PCB> prontos) {
+	public Escalonador(LinkedList<PCB> prontos, Semaphore escSemaphore, CPU cpu) {
 		this.prontos = prontos;
 		this.pointer = 0;
+		this.escSemaphore = escSemaphore;
+		this.cpu = cpu;
 	}
 
-	public PCB escalona() {
-		//Esse IF está aqui para o caso de um processo ser desalocado enquanto o pointer estava apontando para a última posição.
-		if(pointer >= prontos.size()){
-			pointer = 0;
+	public void run() {
+		while(true){
+			try{
+				escSemaphore.acquire();
+				if(pointer >= prontos.size()){
+					pointer = 0;
+				}
+				PCB pcb = prontos.get(pointer);
+				int old = pointer;
+				pointer = (pointer + 1) % prontos.size();
+				prontos.remove(old);
+				cpu.setContext(pcb.getContext());
+				cpuSemaphore.release();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		PCB pcb = prontos.get(pointer);
-		int old = pointer;
-		pointer = (pointer + 1) % prontos.size();
-		prontos.remove(old);
-		return pcb;
 	}
 
+	public LinkedList<PCB> getProntos() {
+		return prontos;
+	}
 }

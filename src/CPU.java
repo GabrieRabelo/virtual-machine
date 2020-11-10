@@ -1,7 +1,9 @@
 import enums.Interrupts;
 import enums.Opcode;
 
-public class CPU {
+import java.util.concurrent.Semaphore;
+
+public class CPU extends Thread {
 
 	private int programCounter;
 	private Word instrucionRegister;
@@ -12,11 +14,18 @@ public class CPU {
 	private Word[] memory;
 	private int[] allocatedPages;
 	private int quantum;
+	private Rotinas rotinas;
+	private Semaphore escSemaforo;
+	private Semaphore cpuSemaforo;
+	private int processId;
 
 
-	public CPU(Word[] memory) {
+	public CPU(Word[] memory, Semaphore escSemaforo, Semaphore cpuSemaforo, Rotinas rotinas) {
 		this.memory = memory;
 		registers = new int[8];
+		this.escSemaforo = escSemaforo;
+		this.cpuSemaforo = cpuSemaforo;
+		this.rotinas = rotinas;
 	}
 
 	public int translateMemory(int address){
@@ -25,7 +34,7 @@ public class CPU {
 	}
 
 	public Context getContext() {
-		return new Context(base,limite,allocatedPages,registers,programCounter,instrucionRegister);
+		return new Context(base,limite,allocatedPages,registers,programCounter,instrucionRegister, processId);
 	}
 
 	public void setContext(Context processContext) {
@@ -35,6 +44,8 @@ public class CPU {
 		this.programCounter = processContext.getProgramCounter();
 		this.registers = processContext.getRegisters();
 		this.interrupts = Interrupts.NO_INTERRUPT;
+		this.quantum = 0;
+		this.processId = processContext.getProcessId();
 	}
 
 	private boolean isLegal(int e) {
@@ -63,8 +74,7 @@ public class CPU {
 		return true;
 	}
 
-	public Interrupts run() {
-		this.quantum = 0;
+	public void run() {
 		while (true) {
 			//Fetch
 			if (isLegal(translateMemory(programCounter))) {
@@ -230,22 +240,15 @@ public class CPU {
 				System.out.println(interrupts);
 				switch (interrupts){
 					case INT_STOP:
+					case INT_ENDERECO_INVALIDO:
+					case INT_INSTRUCAO_INVALIDA:
 						//Aqui mandamos para a rotina de tratamento de STOP, onde ele finaliza o processo,
 						// chamando o GP e escalona novo processo
-						return Interrupts.INT_STOP;
-						//rotinas.stop(process_id);
-					case INT_ENDERECO_INVALIDO:
-						//Aqui mandamos para a rotina de tratamento de END_INVALIDO, onde ele finaliza o processo,
-						// chamando o GP e escalona novo processo
-						return Interrupts.INT_ENDERECO_INVALIDO;
-					case INT_INSTRUCAO_INVALIDA:
-						//Aqui mandamos para a rotina de tratamento de INSTRUCAO_INVALIDA, onde ele finaliza o processo,
-						// chamando o GP e escalona novo processo
-						return Interrupts.INT_INSTRUCAO_INVALIDA;
+						rotinas.stop(processId);
 					case INT_TIMER:
 						//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
 						// chamando o GP e escalona novo processo
-						return Interrupts.INT_TIMER;
+						rotinas.timer();
 				}
 				//break;
 			}
