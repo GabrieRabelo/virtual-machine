@@ -1,18 +1,30 @@
+import java.util.concurrent.Semaphore;
+
 /*
 RATE MY OS
  */
 public class Application {
 	public static void main(String[] args) {
 
+		Semaphore semaphore = new Semaphore(1);
+
+		Shell shell = new Shell(semaphore);
+		shell.start();
+
 		OS os = new OS();
 
-		//Cria processos na memória e coloca na fila de prontos
-		os.carga("p1.txt");
-		os.carga("p2.txt");
-		os.carga("p3.txt");
-		os.carga("p4.txt");
-
-		os.run();
-
+		while(true) {
+			try{
+				if(shell.getProgram() != null) {
+					semaphore.acquire();
+					os.carga("p" + shell.getProgram() + ".txt");
+					os.run();
+					shell.setProgram(null);
+					semaphore.release();
+				}
+			} catch (InterruptedException ie) {
+				System.out.println("Programa Interrompido.");
+			}
+		}
 	}
 }
