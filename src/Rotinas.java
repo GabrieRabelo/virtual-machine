@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Rotinas {
@@ -12,14 +13,16 @@ public class Rotinas {
         this.escSemaforo = escSemaforo;
     }
     //finaliza o processo, chamando o GP e escalona novo processo
-    public void stop(PCB processo){
-        gp.finalizaProcesso(processo);
+    public void stop(){
+        gp.finalizaProcesso(escalonador.getRunningProcess());
         escSemaforo.release();
     }
 
-    public void timer(PCB processo, CPU cpu) {
-        processo.saveContext(cpu.getContext());
-        escalonador.getProntos().add(processo);
+    public void timer(Context context) {
+        PCB process = escalonador.getRunningProcess();
+
+        process.saveContext(context);
+        escalonador.getProntos().add(process);
         escSemaforo.release();
     }
 }

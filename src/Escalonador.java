@@ -7,23 +7,27 @@ public class Escalonador extends Thread {
 	private int pointer;
 	private Semaphore escSemaphore;
 	private Semaphore cpuSemaphore;
+	private PCB runningProcess;
 	private CPU cpu;
 
-	public Escalonador(LinkedList<PCB> prontos, Semaphore escSemaphore, CPU cpu) {
+	public Escalonador(LinkedList<PCB> prontos, Semaphore escSemaphore, Semaphore cpuSemaphore, CPU cpu) {
 		this.prontos = prontos;
 		this.pointer = 0;
 		this.escSemaphore = escSemaphore;
+		this.cpuSemaphore = cpuSemaphore;
 		this.cpu = cpu;
 	}
 
 	public void run() {
 		while(true){
+			System.out.println("ESCALONADOR");
 			try{
 				escSemaphore.acquire();
 				if(pointer >= prontos.size()){
 					pointer = 0;
 				}
 				PCB pcb = prontos.get(pointer);
+				this.runningProcess = pcb;
 				int old = pointer;
 				pointer = (pointer + 1) % prontos.size();
 				prontos.remove(old);
@@ -33,6 +37,10 @@ public class Escalonador extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public PCB getRunningProcess() {
+		return runningProcess;
 	}
 
 	public LinkedList<PCB> getProntos() {

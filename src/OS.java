@@ -12,13 +12,13 @@ public class OS {
     private Semaphore cpuSemaforo = new Semaphore(1);
 
     public OS() {
-        vm = new VM(escSemaforo, cpuSemaforo, rotinas);
+        vm = new VM(escSemaforo, cpuSemaforo);
         prontos = new LinkedList();
-        escalonador = new Escalonador(prontos, escSemaforo, vm.cpu);
+        escalonador = new Escalonador(prontos, escSemaforo, cpuSemaforo, vm.cpu);
         gm = new GM(vm.mem);
         gp = new GP(gm, prontos);
-        this.rotinas = new Rotinas(gp, escalonador, escSemaforo);
-
+        rotinas = new Rotinas(gp, escalonador, escSemaforo);
+        vm.cpu.setRotinas(rotinas);
     }
 
     public void carga(String file) {
@@ -26,7 +26,10 @@ public class OS {
     }
 
     public void run(){
+        escalonador.setName("escalonador");
         escalonador.start();
+        vm.cpu.setName("cpu");
+        vm.cpu.start();
 
 
 //        while(true){

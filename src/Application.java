@@ -9,6 +9,7 @@ public class Application {
 		Semaphore semaphore = new Semaphore(1);
 
 		Shell shell = new Shell(semaphore);
+		shell.setName("shell");
 		shell.start();
 
 		OS os = new OS();

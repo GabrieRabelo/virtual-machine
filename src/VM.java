@@ -28,12 +28,12 @@ public class VM {
     public Word[] mem;
     public CPU cpu;
 
-    public VM(Semaphore escSemaphore, Semaphore cpuSemaforo, Rotinas rotinas){
+    public VM(Semaphore escSemaphore, Semaphore cpuSemaforo){
 		tamMem = 1024;
 		mem = new Word[tamMem];
 		for (int i=0; i<tamMem; i++)
 			mem[i] = new Word(Opcode.___,-1,-1,-1);
-		cpu = new CPU(mem, escSemaphore, cpuSemaforo, rotinas);
+		cpu = new CPU(mem, escSemaphore, cpuSemaforo);
 	}
 
 	public void dump(int ini, int fim) {
