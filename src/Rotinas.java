@@ -1,16 +1,17 @@
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Rotinas {
     private GP gp;
     private Escalonador escalonador;
     private Semaphore escSemaforo;
+    private Semaphore cpuSemaforo;
 
-    public Rotinas(GP gp, Escalonador escalonador, Semaphore escSemaforo) {
+
+    public Rotinas(GP gp, Escalonador escalonador, Semaphore escSemaforo, Semaphore cpuSemaforo) {
         this.gp = gp;
         this.escalonador = escalonador;
         this.escSemaforo = escSemaforo;
+        this.cpuSemaforo = cpuSemaforo;
     }
     //finaliza o processo, chamando o GP e escalona novo processo
     public void stop(){

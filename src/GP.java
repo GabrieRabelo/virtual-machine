@@ -7,11 +7,13 @@ import java.util.Scanner;
 
 public class GP {
     private GM gm;
+    private VM vm;
     private LinkedList<PCB> prontos;
     private static int process_id = 0;
 
-    public GP(GM gm, LinkedList<PCB> prontos) {
+    public GP(GM gm, VM vm, LinkedList<PCB> prontos) {
         this.gm = gm;
+        this.vm = vm;
         this.prontos = prontos;
     }
 

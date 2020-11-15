@@ -77,8 +77,9 @@ public class CPU extends Thread {
 	}
 
 	public void run() {
+
 		while(true) {
-			System.out.println("CPU");
+			System.out.println("CPU " + programCounter);
 			try {
 				cpuSemaforo.acquire();
 			} catch (InterruptedException e) {
@@ -254,14 +255,16 @@ public class CPU extends Thread {
 							//Aqui mandamos para a rotina de tratamento de STOP, onde ele finaliza o processo,
 							// chamando o GP e escalona novo processo
 							rotinas.stop();
-							cpuSemaforo.release();
+							break;
 						case INT_TIMER:
 							//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
 							// chamando o GP e escalona novo processo
 							rotinas.timer(getContext());
-							cpuSemaforo.release();
+							System.out.println("timer");
 					}
-					//break;
+					cpuSemaforo.release();
+					break;
+
 				}
 			}
 		}

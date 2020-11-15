@@ -23,6 +23,7 @@ public class Escalonador extends Thread {
 			System.out.println("ESCALONADOR");
 			try{
 				escSemaphore.acquire();
+				cpuSemaphore.acquire();
 				if(pointer >= prontos.size()){
 					pointer = 0;
 				}
@@ -33,6 +34,7 @@ public class Escalonador extends Thread {
 				prontos.remove(old);
 				cpu.setContext(pcb.getContext());
 				cpuSemaphore.release();
+
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
