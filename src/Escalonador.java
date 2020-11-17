@@ -23,10 +23,13 @@ public class Escalonador extends Thread {
 			System.out.println("ESCALONADOR");
 			try{
 				escSemaphore.acquire();
-				cpuSemaphore.acquire();
-				if(pointer >= prontos.size()){
-					pointer = 0;
+				//cpuSemaphore.acquire();
+				if(prontos.size() == 0){
+					continue;
 				}
+				//if(pointer >= prontos.size()){
+					//pointer = 0;
+				//}
 				PCB pcb = prontos.get(pointer);
 				this.runningProcess = pcb;
 				int old = pointer;

@@ -262,7 +262,7 @@ public class CPU extends Thread {
 							rotinas.timer(getContext());
 							System.out.println("timer");
 					}
-					cpuSemaforo.release();
+					//cpuSemaforo.release();
 					break;
 
 				}

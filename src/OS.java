@@ -8,8 +8,8 @@ public class OS {
     private Escalonador escalonador;
     private LinkedList<PCB> prontos;
     private Rotinas rotinas;
-    private Semaphore escSemaforo = new Semaphore(1);
-    private Semaphore cpuSemaforo = new Semaphore(1);
+    private Semaphore escSemaforo = new Semaphore(0);
+    private Semaphore cpuSemaforo = new Semaphore(0);
 
     public OS() {
         vm = new VM(escSemaforo, cpuSemaforo);

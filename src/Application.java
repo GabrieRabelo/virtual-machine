@@ -13,19 +13,13 @@ public class Application {
 		shell.start();
 
 		OS os = new OS();
+		os.run();
 
 		while(true) {
-			try{
-				if(shell.getProgram() != null) {
-					semaphore.acquire();
+			Integer entrada = Integer.parseInt(in.nextLine());
 					os.carga("p" + shell.getProgram() + ".txt");
-					os.run();
 					shell.setProgram(null);
-					semaphore.release();
-				}
-			} catch (InterruptedException ie) {
-				System.out.println("Programa Interrompido.");
-			}
+
 		}
 	}
 }

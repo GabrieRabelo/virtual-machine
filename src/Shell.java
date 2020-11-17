@@ -15,16 +15,10 @@ public class Shell extends Thread {
 	public void run() {
 		while(true) {
 			try{
-				semaphore.acquire();
 				Integer entrada = Integer.parseInt(in.nextLine());
 				program = entrada;
-				semaphore.release();
 			} catch (NumberFormatException nfe) {
 				System.out.println("Apenas números inteiros");
-			} catch (InterruptedException ie) {
-				System.out.println("Programa Interrompido.");
-			} finally {
-				semaphore.release();
 			}
 		}
 	}

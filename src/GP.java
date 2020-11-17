@@ -21,18 +21,28 @@ public class GP {
         se não ha processo rodando, libera o escalonador*/
 
     public void criaProcesso(String file) {
+        semaphore.acquire()
         Word[] p = assembly(file);
         int[] allocatedPages = gm.alloc(p);
         PCB processo = new PCB(process_id, allocatedPages);
         process_id++;
         prontos.add(processo);
+        //cuidar com muitos processos, e já tiver processos ativos
+        if(prontos.size() == 0 && runningProcess == null){
+            escSemaphore.release();
+        }
+        semaphore.release()
     }
 
+    /*mutex do GP, inicializado em 1 para cria e finaliza*/
+    /*mutex para a fila de prontos*/
     /*desaloca pcb e memoria e retira de filas*/
 
     public void finalizaProcesso(PCB process) {
+        semaphore.acquire()
         gm.desaloca(process);
         prontos.remove(process);
+        semaphore.release()
     }
 
 
