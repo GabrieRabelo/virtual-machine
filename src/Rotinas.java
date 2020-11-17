@@ -16,12 +16,13 @@ public class Rotinas {
     //finaliza o processo, chamando o GP e escalona novo processo
     public void stop(){
         gp.finalizaProcesso(escalonador.getRunningProcess());
+        escalonador.setRunningProcessAsNull();
         escSemaforo.release();
     }
 
     public void timer(Context context) {
         PCB process = escalonador.getRunningProcess();
-
+        escalonador.setRunningProcessAsNull();
         process.saveContext(context);
         escalonador.getProntos().add(process);
         escSemaforo.release();

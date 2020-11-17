@@ -16,7 +16,7 @@ public class OS {
         prontos = new LinkedList();
         escalonador = new Escalonador(prontos, escSemaforo, cpuSemaforo, vm.cpu);
         gm = new GM(vm.mem);
-        gp = new GP(gm, vm, prontos);
+        gp = new GP(gm, vm, prontos, escSemaforo, escalonador);
         rotinas = new Rotinas(gp, escalonador, escSemaforo, cpuSemaforo);
         vm.cpu.setRotinas(rotinas);
     }

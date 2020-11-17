@@ -48,6 +48,10 @@ public class Escalonador extends Thread {
 		return runningProcess;
 	}
 
+	public void setRunningProcessAsNull(){
+		this.runningProcess = null;
+	}
+
 	public LinkedList<PCB> getProntos() {
 		return prontos;
 	}

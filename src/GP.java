@@ -4,45 +4,59 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.concurrent.Semaphore;
 
 public class GP {
     private GM gm;
     private VM vm;
     private LinkedList<PCB> prontos;
+    private Semaphore escSemaforo;
     private static int process_id = 0;
+    private Escalonador escalonador;
+    private Semaphore mutex = new Semaphore(1);
 
-    public GP(GM gm, VM vm, LinkedList<PCB> prontos) {
+    public GP(GM gm, VM vm, LinkedList<PCB> prontos, Semaphore escSemaforo, Escalonador escalonador) {
         this.gm = gm;
         this.vm = vm;
         this.prontos = prontos;
+        this.escSemaforo = escSemaforo;
+        this.escalonador = escalonador;
     }
 
     /*solicita memoria, carrega imagem processo, cria pcb, coloca na fila de prontos
         se não ha processo rodando, libera o escalonador*/
 
-    public void criaProcesso(String file) {
-        semaphore.acquire()
+    public void criaProcesso(String file){
+        try{
+            mutex.acquire();
+        }catch (InterruptedException e){}
         Word[] p = assembly(file);
         int[] allocatedPages = gm.alloc(p);
         PCB processo = new PCB(process_id, allocatedPages);
         process_id++;
-        prontos.add(processo);
         //cuidar com muitos processos, e já tiver processos ativos
-        if(prontos.size() == 0 && runningProcess == null){
-            escSemaphore.release();
+        if(prontos.size() == 0 && escalonador.getRunningProcess() == null){
+            System.out.println("Adiciona com release");
+            prontos.add(processo);
+            escSemaforo.release();
+        }else{
+            System.out.println("Adiciona sem release");
+            prontos.add(processo);
         }
-        semaphore.release()
+        mutex.release();
     }
 
     /*mutex do GP, inicializado em 1 para cria e finaliza*/
     /*mutex para a fila de prontos*/
     /*desaloca pcb e memoria e retira de filas*/
 
-    public void finalizaProcesso(PCB process) {
-        semaphore.acquire()
+    public void finalizaProcesso(PCB process){
+        try{
+            mutex.acquire();
+        }catch (InterruptedException e){}
         gm.desaloca(process);
         prontos.remove(process);
-        semaphore.release()
+        mutex.release();
     }
 
 
