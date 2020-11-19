@@ -5,21 +5,25 @@ import java.util.concurrent.Semaphore;
 RATE MY OS
  */
 public class Application {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
-		//Semaphore semaphore = new Semaphore(1);
+		BootAnimation ba = new BootAnimation();
+		ba.load();
 
-		//Shell shell = new Shell(semaphore);
-		//shell.setName("shell");
-		//shell.start();
-		Scanner in = new Scanner(System.in);
 		OS os = new OS();
-		os.run();
 
+		Scanner in = new Scanner(System.in);
+		int entrada;
 		while(true) {
-			Integer entrada = Integer.parseInt(in.nextLine());
+
+			try{
+				System.out.println("\nDigite o número do programa a ser executado: ");
+				entrada = Integer.parseInt(in.nextLine());
+			} catch (NumberFormatException nfe) {
+				System.out.println("Apenas números!");
+				continue;
+			}
 			os.carga("p" + entrada + ".txt");
-			//shell.setProgram(null);
 		}
 	}
 }

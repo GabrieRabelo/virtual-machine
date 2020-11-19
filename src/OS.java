@@ -19,6 +19,7 @@ public class OS {
         gp = new GP(gm, vm, prontos, escSemaforo, escalonador);
         rotinas = new Rotinas(gp, escalonador, escSemaforo, cpuSemaforo);
         vm.cpu.setRotinas(rotinas);
+        this.run();
     }
 
     public void carga(String file) {
