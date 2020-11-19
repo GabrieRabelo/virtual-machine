@@ -35,9 +35,9 @@ public class OS {
 
     public void run(){
         escalonador.setName("Escalonador");
-        System.out.println("Iniciando Thread " + escalonador.getName());
+        System.out.println("\nIniciando Thread Escalonador");
         escalonador.start();
-        System.out.println("Iniciando Thread " + cpu.getName());
+        System.out.println("Iniciando Thread CPU");
         cpu.setName("Cpu");
         cpu.start();
     }
