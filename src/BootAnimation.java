@@ -1,9 +1,9 @@
 public class BootAnimation {
-	private String fakeCommands;
+	private String fakeCommandsTxt;
 	private String OSName;
 
 	public BootAnimation() {
-		this.fakeCommands = "Press F12 Boot for boot Menu or Del for Setup";
+		this.fakeCommandsTxt = "Press F12 Boot for boot Menu or Del for Setup";
 		this.OSName = "    __  ___                           ____  _____\n" +
 				"   /  |/  /___ _____ ___  ____ ______/ __ \\/ ___/\n" +
 				"  / /|_/ / __ `/ __ `__ \\/ __ `/ ___/ / / /\\__ \\ \n" +
@@ -12,10 +12,15 @@ public class BootAnimation {
 	}
 
 	public void load() throws InterruptedException {
-		System.out.println(fakeCommands);
+		System.out.println(fakeCommandsTxt);
 		System.out.println("\n");
 		System.out.println(OSName);
 		System.out.println("\n");
-		Thread.sleep(5000);
+
+		System.out.print("Loading");
+		for(int i=0; i<10; i++) {
+			System.out.print(".");
+			Thread.sleep(250);
+		}
 	}
 }
