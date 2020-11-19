@@ -20,11 +20,15 @@ public class CPU extends Thread {
 	private int processId;
 
 
-	public CPU(Word[] memory, Semaphore escSemaforo, Semaphore cpuSemaforo) {
+	public CPU() {
+	}
+
+	public void setAttributes(Word[] memory, Semaphore escSemaforo, Semaphore cpuSemaforo, Rotinas rotinas) {
 		this.memory = memory;
 		registers = new int[8];
 		this.escSemaforo = escSemaforo;
 		this.cpuSemaforo = cpuSemaforo;
+		this.rotinas = rotinas;
 	}
 
 	public int translateMemory(int address){
@@ -79,7 +83,6 @@ public class CPU extends Thread {
 	public void run() {
 
 		while(true) {
-			System.out.println("CPU " + programCounter);
 			try {
 				cpuSemaforo.acquire();
 			} catch (InterruptedException e) {
@@ -260,11 +263,8 @@ public class CPU extends Thread {
 							//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
 							// chamando o GP e escalona novo processo
 							rotinas.timer(getContext());
-							System.out.println("timer");
 					}
-					//cpuSemaforo.release();
 					break;
-
 				}
 			}
 		}

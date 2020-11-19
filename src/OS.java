@@ -2,7 +2,8 @@ import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
 public class OS {
-    public VM vm;
+    public Memory memory;
+    private CPU cpu;
     private GM gm;
     private GP gp;
     private Escalonador escalonador;
@@ -12,13 +13,19 @@ public class OS {
     private Semaphore cpuSemaforo = new Semaphore(0);
 
     public OS() {
-        vm = new VM(escSemaforo, cpuSemaforo);
+        memory = new Memory(escSemaforo, cpuSemaforo);
         prontos = new LinkedList();
-        escalonador = new Escalonador(prontos, escSemaforo, cpuSemaforo, vm.cpu);
-        gm = new GM(vm.mem);
-        gp = new GP(gm, vm, prontos, escSemaforo, escalonador);
-        rotinas = new Rotinas(gp, escalonador, escSemaforo, cpuSemaforo);
-        vm.cpu.setRotinas(rotinas);
+        gm = new GM(memory.mem);
+        escalonador = new Escalonador();
+        gp = new GP();
+        rotinas = new Rotinas();
+        cpu = new CPU();
+
+        escalonador.setAttributes(prontos, escSemaforo, cpuSemaforo, cpu);
+        gp.setAttributes(gm, memory, prontos, escSemaforo, escalonador);
+        rotinas.setAttributes(gp, escalonador, escSemaforo, memory);
+        cpu.setAttributes(memory.mem, escSemaforo, cpuSemaforo, rotinas);
+
         this.run();
     }
 
@@ -27,11 +34,12 @@ public class OS {
     }
 
     public void run(){
-        escalonador.setName("escalonador");
+        escalonador.setName("Escalonador");
+        System.out.println("Iniciando Thread " + escalonador.getName());
         escalonador.start();
-        vm.cpu.setName("cpu");
-        vm.cpu.start();
-
+        System.out.println("Iniciando Thread " + cpu.getName());
+        cpu.setName("Cpu");
+        cpu.start();
     }
 
 }

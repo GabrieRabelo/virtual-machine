@@ -8,16 +8,20 @@ import java.util.concurrent.Semaphore;
 
 public class GP {
     private GM gm;
-    private VM vm;
+    private Memory memory;
     private LinkedList<PCB> prontos;
     private Semaphore escSemaforo;
     private static int process_id = 0;
     private Escalonador escalonador;
     private Semaphore mutex = new Semaphore(1);
 
-    public GP(GM gm, VM vm, LinkedList<PCB> prontos, Semaphore escSemaforo, Escalonador escalonador) {
+    public GP() {
+
+    }
+
+    public void setAttributes(GM gm, Memory memory, LinkedList<PCB> prontos, Semaphore escSemaforo, Escalonador escalonador){
         this.gm = gm;
-        this.vm = vm;
+        this.memory = memory;
         this.prontos = prontos;
         this.escSemaforo = escSemaforo;
         this.escalonador = escalonador;

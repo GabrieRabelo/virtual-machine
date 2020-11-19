@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class Escalonador extends Thread {
@@ -10,26 +11,16 @@ public class Escalonador extends Thread {
 	private PCB runningProcess;
 	private CPU cpu;
 
-	public Escalonador(LinkedList<PCB> prontos, Semaphore escSemaphore, Semaphore cpuSemaphore, CPU cpu) {
-		this.prontos = prontos;
-		this.pointer = 0;
-		this.escSemaphore = escSemaphore;
-		this.cpuSemaphore = cpuSemaphore;
-		this.cpu = cpu;
-	}
+	public Escalonador() { }
 
+	@Override
 	public void run() {
 		while(true){
-			System.out.println("ESCALONADOR");
 			try{
 				escSemaphore.acquire();
-				//cpuSemaphore.acquire();
-				if(prontos.size() == 0){
+				if(prontos.isEmpty()){
 					continue;
 				}
-				//if(pointer >= prontos.size()){
-					//pointer = 0;
-				//}
 				PCB pcb = prontos.get(pointer);
 				this.runningProcess = pcb;
 				int old = pointer;
@@ -44,6 +35,14 @@ public class Escalonador extends Thread {
 		}
 	}
 
+	public void setAttributes(LinkedList<PCB> prontos, Semaphore escSemaphore, Semaphore cpuSemaphore, CPU cpu){
+		this.prontos = prontos;
+		this.pointer = 0;
+		this.escSemaphore = escSemaphore;
+		this.cpuSemaphore = cpuSemaphore;
+		this.cpu = cpu;
+	}
+
 	public PCB getRunningProcess() {
 		return runningProcess;
 	}
@@ -52,7 +51,7 @@ public class Escalonador extends Thread {
 		this.runningProcess = null;
 	}
 
-	public LinkedList<PCB> getProntos() {
+	public List<PCB> getProntos() {
 		return prontos;
 	}
 }

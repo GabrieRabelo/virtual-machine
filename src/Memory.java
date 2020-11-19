@@ -22,18 +22,16 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
-public class VM {
+public class Memory {
 
 	public int tamMem;    
     public Word[] mem;
-    public CPU cpu;
 
-    public VM(Semaphore escSemaphore, Semaphore cpuSemaforo){
+    public Memory(Semaphore escSemaphore, Semaphore cpuSemaforo){
 		tamMem = 1024;
 		mem = new Word[tamMem];
 		for (int i=0; i<tamMem; i++)
 			mem[i] = new Word(Opcode.___,-1,-1,-1);
-		cpu = new CPU(mem, escSemaphore, cpuSemaforo);
 	}
 
 	public void dump(int ini, int fim) {

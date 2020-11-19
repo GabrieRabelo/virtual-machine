@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.concurrent.Semaphore;
 
 /*
 RATE MY OS
@@ -19,6 +18,8 @@ public class Application {
 			try{
 				System.out.println("\nDigite o número do programa a ser executado: ");
 				entrada = Integer.parseInt(in.nextLine());
+				if(entrada == -1)
+					Runtime.getRuntime().exit(1);
 			} catch (NumberFormatException nfe) {
 				System.out.println("Apenas números!");
 				continue;

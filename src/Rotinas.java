@@ -4,17 +4,22 @@ public class Rotinas {
     private GP gp;
     private Escalonador escalonador;
     private Semaphore escSemaforo;
-    private Semaphore cpuSemaforo;
+    private Memory memory;
 
 
-    public Rotinas(GP gp, Escalonador escalonador, Semaphore escSemaforo, Semaphore cpuSemaforo) {
+    public Rotinas() {
+    }
+
+    public void setAttributes(GP gp, Escalonador escalonador, Semaphore escSemaforo, Memory memory) {
         this.gp = gp;
         this.escalonador = escalonador;
         this.escSemaforo = escSemaforo;
-        this.cpuSemaforo = cpuSemaforo;
+        this.memory = memory;
     }
+
     //finaliza o processo, chamando o GP e escalona novo processo
     public void stop(){
+        memory.dump(0,80);
         gp.finalizaProcesso(escalonador.getRunningProcess());
         escalonador.setRunningProcessAsNull();
         escSemaforo.release();
