@@ -1,29 +1,45 @@
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 
 public class OS {
-    private VM vm;
+    public Memory memory;
+    private CPU cpu;
     private GM gm;
-    private LinkedList<PCB> processos;
-    private static int process_id = 0;
+    private GP gp;
+    private Escalonador escalonador;
+    private LinkedList<PCB> prontos;
+    private Rotinas rotinas;
+    private Semaphore escSemaforo = new Semaphore(0);
+    private Semaphore cpuSemaforo = new Semaphore(0);
 
     public OS() {
-        vm = new VM();
-        gm = new GM(vm.mem);
-        processos = new LinkedList();
+        memory = new Memory(escSemaforo, cpuSemaforo);
+        prontos = new LinkedList();
+        gm = new GM(memory.mem);
+        escalonador = new Escalonador();
+        gp = new GP();
+        rotinas = new Rotinas();
+        cpu = new CPU();
+
+        escalonador.setAttributes(prontos, escSemaforo, cpuSemaforo, cpu);
+        gp.setAttributes(gm, memory, prontos, escSemaforo, escalonador);
+        rotinas.setAttributes(gp, escalonador, escSemaforo, memory);
+        cpu.setAttributes(memory.mem, escSemaforo, cpuSemaforo, rotinas);
+
+        this.run();
     }
 
     public void carga(String file) {
-        Word[] p = vm.assembly(file);
-        int[] allocatedPages = gm.alloc(p);
-        PCB processo = new PCB(process_id, allocatedPages);
-        process_id++;
-        processos.add(processo);
+        gp.criaProcesso(file);
     }
 
-    // Função para dizer pro OS mandar a VM executar X processo. Ainda n sei ao certo a melhor maneira de fazer isso, então deixei direto na carga
-    public void run(int process_id){
-        vm.run(processos.get(process_id));
-        gm.desaloca(processos.get(process_id));
+    public void run(){
+        escalonador.setName("Escalonador");
+        System.out.println("Iniciando Thread " + escalonador.getName());
+        escalonador.start();
+        System.out.println("Iniciando Thread " + cpu.getName());
+        cpu.setName("Cpu");
+        cpu.start();
     }
 
 }

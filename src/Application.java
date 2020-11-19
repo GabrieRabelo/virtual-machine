@@ -1,18 +1,30 @@
+import java.util.Scanner;
+
 /*
 RATE MY OS
  */
 public class Application {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
+
+		BootAnimation ba = new BootAnimation();
+		ba.load();
 
 		OS os = new OS();
-		os.carga("p1.txt");
-		os.carga("p2.txt");
-		os.carga("p3.txt");
-		os.carga("p4.txt");
 
-		os.run(0);
-		os.run(1);
-		os.run(2);
-		os.run(3);
+		Scanner in = new Scanner(System.in);
+		int entrada;
+		while(true) {
+
+			try{
+				System.out.println("\nDigite o número do programa a ser executado: ");
+				entrada = Integer.parseInt(in.nextLine());
+				if(entrada == -1)
+					Runtime.getRuntime().exit(1);
+			} catch (NumberFormatException nfe) {
+				System.out.println("Apenas números!");
+				continue;
+			}
+			os.carga("p" + entrada + ".txt");
+		}
 	}
 }

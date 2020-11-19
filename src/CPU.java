@@ -1,7 +1,9 @@
 import enums.Interrupts;
 import enums.Opcode;
 
-public class CPU {
+import java.util.concurrent.Semaphore;
+
+public class CPU extends Thread {
 
 	private int programCounter;
 	private Word instrucionRegister;
@@ -11,23 +13,45 @@ public class CPU {
 	private int limite;
 	private Word[] memory;
 	private int[] allocatedPages;
+	private int quantum;
+	private Rotinas rotinas;
+	private Semaphore escSemaforo;
+	private Semaphore cpuSemaforo;
+	private int processId;
 
-	public CPU(Word[] memory) {
+
+	public CPU() {
+	}
+
+	public void setAttributes(Word[] memory, Semaphore escSemaforo, Semaphore cpuSemaforo, Rotinas rotinas) {
 		this.memory = memory;
 		registers = new int[8];
+		this.escSemaforo = escSemaforo;
+		this.cpuSemaforo = cpuSemaforo;
+		this.rotinas = rotinas;
 	}
 
 	public int translateMemory(int address){
-		System.out.println(address);
+//		System.out.println(address);
 		return (allocatedPages[(address / 16)] * 16) + (address % 16);
 	}
 
-	public void setContext(int base, int limite, int[] allocatedPages, int programCounter) {
-		this.base = base;
-		this.limite = limite;
-		this.allocatedPages = allocatedPages;
-		this.programCounter = programCounter;
+	public Context getContext() {
+		return new Context(base,limite,allocatedPages,registers,programCounter,instrucionRegister);
+	}
+
+	public void setRotinas(Rotinas rotinas) {
+		this.rotinas = rotinas;
+	}
+
+	public void setContext(Context processContext) {
+		this.base = processContext.getBase();
+		this.limite = processContext.getLimite();
+		this.allocatedPages = processContext.getAllocatedPages();
+		this.programCounter = processContext.getProgramCounter();
+		this.registers = processContext.getRegisters();
 		this.interrupts = Interrupts.NO_INTERRUPT;
+		this.quantum = 0;
 	}
 
 	private boolean isLegal(int e) {
@@ -57,167 +81,194 @@ public class CPU {
 	}
 
 	public void run() {
-		while (true) {
-			//Fetch
-			if (isLegal(translateMemory(programCounter))) {
-				instrucionRegister = memory[translateMemory(programCounter)];
-				System.out.println(instrucionRegister);
-				// EXECUTA INSTRUCAO NO ir
-				switch (instrucionRegister.opCode) {
-					case JMP: // PC ← k
-						programCounter = instrucionRegister.param;
-						break;
 
-					case JMPI: // PC ← Rs
-						programCounter = registers[instrucionRegister.r1];
-						break;
+		while(true) {
+			try {
+				cpuSemaforo.acquire();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-					case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
-						if(registers[instrucionRegister.r1] > 0)
-							programCounter = registers[instrucionRegister.r2];
-						else
-							programCounter++;
-						break;
+			while (true) {
 
-					case JMPIL: // if Rc < 0 then PC ← Rs  // Else PC ← PC +1
-						if(registers[instrucionRegister.r1] < 0)
-							programCounter = registers[instrucionRegister.r2];
-						else
-							programCounter++;
-//                        System.out.println(programCounter);
-						break;
+				//Fetch
+				if (isLegal(translateMemory(programCounter))) {
+					instrucionRegister = memory[translateMemory(programCounter)];
 
-					case JMPIE: // if Rc = 0 then PC ← Rs // Else PC ← PC +1
-						if(registers[instrucionRegister.r1] == 0)
-							programCounter = registers[instrucionRegister.r2];
-						else
-							programCounter++;
-//                        System.out.println(programCounter);
-						break;
+					quantum ++;
+					if(quantum >= 5){
+						interrupts = Interrupts.INT_TIMER;
+					}
 
-					case JMPIM: // PC ← [A]
-						if (isLegal(instrucionRegister.param)) {
+					switch (instrucionRegister.opCode) {
+						case JMP: // PC ← k
 							programCounter = instrucionRegister.param;
-						}
-						break;
+							break;
 
-					case JMPIGM: // if Rc > 0 then PC ← [A]  //Else PC ← PC +1
-						if(registers[instrucionRegister.r1] > 0 && isLegal(translateMemory(instrucionRegister.param)))
-							programCounter = instrucionRegister.param;
-						else
-							programCounter++;
+						case JMPI: // PC ← Rs
+							programCounter = registers[instrucionRegister.r1];
+							break;
+
+						case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
+							if(registers[instrucionRegister.r1] > 0)
+								programCounter = registers[instrucionRegister.r2];
+							else
+								programCounter++;
+							break;
+
+						case JMPIL: // if Rc < 0 then PC ← Rs  // Else PC ← PC +1
+							if(registers[instrucionRegister.r1] < 0)
+								programCounter = registers[instrucionRegister.r2];
+							else
+								programCounter++;
 //                        System.out.println(programCounter);
-						break;
+							break;
 
-					case JMPILM: // if Rc < 0 then PC ← [A]  //Else PC ← PC +1
-						if(registers[instrucionRegister.r1] < 0 && isLegal(translateMemory(instrucionRegister.param)))
-							programCounter = instrucionRegister.param;
-						else
-							programCounter++;
+						case JMPIE: // if Rc = 0 then PC ← Rs // Else PC ← PC +1
+							if(registers[instrucionRegister.r1] == 0)
+								programCounter = registers[instrucionRegister.r2];
+							else
+								programCounter++;
 //                        System.out.println(programCounter);
-						break;
+							break;
 
-					case JMPIEM: // if Rc = 0 then PC ← [A] //Else PC ← PC +1
-						if(registers[instrucionRegister.r1] == 0 && isLegal(translateMemory(instrucionRegister.param))) {
-                            programCounter = instrucionRegister.param;
-                        }else
-							programCounter++;
+						case JMPIM: // PC ← [A]
+							if (isLegal(instrucionRegister.param)) {
+								programCounter = instrucionRegister.param;
+							}
+							break;
+
+						case JMPIGM: // if Rc > 0 then PC ← [A]  //Else PC ← PC +1
+							if(registers[instrucionRegister.r1] > 0 && isLegal(translateMemory(instrucionRegister.param)))
+								programCounter = instrucionRegister.param;
+							else
+								programCounter++;
 //                        System.out.println(programCounter);
-						break;
+							break;
 
-					case ADDI: // Rd ← Rd + k
-						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] + instrucionRegister.param;
-						programCounter++;
-						break;
+						case JMPILM: // if Rc < 0 then PC ← [A]  //Else PC ← PC +1
+							if(registers[instrucionRegister.r1] < 0 && isLegal(translateMemory(instrucionRegister.param)))
+								programCounter = instrucionRegister.param;
+							else
+								programCounter++;
+//                        System.out.println(programCounter);
+							break;
 
-					case SUBI: // Rd ← Rd – k
-						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] - instrucionRegister.param;
-						programCounter++;
-						break;
+						case JMPIEM: // if Rc = 0 then PC ← [A] //Else PC ← PC +1
+							if(registers[instrucionRegister.r1] == 0 && isLegal(translateMemory(instrucionRegister.param))) {
+								programCounter = instrucionRegister.param;
+							}else
+								programCounter++;
+//                        System.out.println(programCounter);
+							break;
 
-					//implementado pelo professor
-					case LDI: // Rd ← k
-						registers[instrucionRegister.r1] = instrucionRegister.param;
-						programCounter++;
-						break;
-
-					case LDD: // Rd ← [A]
-						if (isLegal(translateMemory(instrucionRegister.param))) {
-							registers[instrucionRegister.r1] = this.memory[translateMemory(instrucionRegister.param)].param;
+						case ADDI: // Rd ← Rd + k
+							registers[instrucionRegister.r1] = registers[instrucionRegister.r1] + instrucionRegister.param;
 							programCounter++;
 							break;
-						}
 
-					//implementado pelo professor
-					case STD: // [A] ← Rs
-						if (isLegal(translateMemory(instrucionRegister.param))) {
-							memory[translateMemory(instrucionRegister.param)].opCode = Opcode.DADO;
-							memory[translateMemory(instrucionRegister.param)].param = registers[instrucionRegister.r1];
+						case SUBI: // Rd ← Rd – k
+							registers[instrucionRegister.r1] = registers[instrucionRegister.r1] - instrucionRegister.param;
 							programCounter++;
-						}
-						break;
+							break;
 
-					case ADD: // Rd ← Rd + Rs
-						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] + registers[instrucionRegister.r2];
-						programCounter++;
-						break;
+						//implementado pelo professor
+						case LDI: // Rd ← k
+							registers[instrucionRegister.r1] = instrucionRegister.param;
+							programCounter++;
+							break;
 
-					case SUB: // Rd ← Rd - Rs
-						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] - registers[instrucionRegister.r2];
-                        programCounter++;
-						break;
+						case LDD: // Rd ← [A]
+							if (isLegal(translateMemory(instrucionRegister.param))) {
+								registers[instrucionRegister.r1] = this.memory[translateMemory(instrucionRegister.param)].param;
+								programCounter++;
+								break;
+							}
 
-					case MULT: // Rd ← Rd * Rs
-						registers[instrucionRegister.r1] = registers[instrucionRegister.r1] * registers[instrucionRegister.r2];
-						programCounter++;
-						break;
+							//implementado pelo professor
+						case STD: // [A] ← Rs
+							if (isLegal(translateMemory(instrucionRegister.param))) {
+								memory[translateMemory(instrucionRegister.param)].opCode = Opcode.DADO;
+								memory[translateMemory(instrucionRegister.param)].param = registers[instrucionRegister.r1];
+								programCounter++;
+							}
+							break;
 
-					case LDX: // Rd ← [Rs]
-						if (isLegal(translateMemory(registers[instrucionRegister.r2]))) {
-							registers[instrucionRegister.r1] = memory[translateMemory(registers[instrucionRegister.r2])].param;
-						}
-						programCounter++;
-						break;
+						case ADD: // Rd ← Rd + Rs
+							registers[instrucionRegister.r1] = registers[instrucionRegister.r1] + registers[instrucionRegister.r2];
+							programCounter++;
+							break;
 
-					case STX: // [Rd] ←Rs
+						case SUB: // Rd ← Rd - Rs
+							registers[instrucionRegister.r1] = registers[instrucionRegister.r1] - registers[instrucionRegister.r2];
+							programCounter++;
+							break;
 
-						if (isLegal(translateMemory(registers[instrucionRegister.r1]))) {
-							memory[translateMemory(registers[instrucionRegister.r1])].opCode = Opcode.DADO;
-							memory[translateMemory(registers[instrucionRegister.r1])].param = registers[instrucionRegister.r2];
-						}
-						programCounter++;
-						break;
+						case MULT: // Rd ← Rd * Rs
+							registers[instrucionRegister.r1] = registers[instrucionRegister.r1] * registers[instrucionRegister.r2];
+							programCounter++;
+							break;
 
-					case SWAP: //T ← Rd  Rd ← Rs  Rs ← T Eu não sei se esse T pode ser uma variavel comum ou se será uma LocalStack da CPU
-						int T = registers[instrucionRegister.r1];
-						registers[instrucionRegister.r1] = registers[instrucionRegister.r2];
-						registers[instrucionRegister.r2] = T;
-						programCounter++;
-						break;
+						case LDX: // Rd ← [Rs]
+							if (isLegal(translateMemory(registers[instrucionRegister.r2]))) {
+								registers[instrucionRegister.r1] = memory[translateMemory(registers[instrucionRegister.r2])].param;
+							}
+							programCounter++;
+							break;
 
-					case STOP:
-						interrupts = Interrupts.INT_STOP;
-						break;
+						case STX: // [Rd] ←Rs
 
-					case DADO: //[A] <- [Rd]
-						if (isLegal(translateMemory(instrucionRegister.param))) {
-							memory[translateMemory(instrucionRegister.param)].opCode = Opcode.DADO;
-							memory[translateMemory(instrucionRegister.param)].param = instrucionRegister.r1;
-						}
-						programCounter ++;
-						break;
+							if (isLegal(translateMemory(registers[instrucionRegister.r1]))) {
+								memory[translateMemory(registers[instrucionRegister.r1])].opCode = Opcode.DADO;
+								memory[translateMemory(registers[instrucionRegister.r1])].param = registers[instrucionRegister.r2];
+							}
+							programCounter++;
+							break;
 
-					default:
+						case SWAP: //T ← Rd  Rd ← Rs  Rs ← T Eu não sei se esse T pode ser uma variavel comum ou se será uma LocalStack da CPU
+							int T = registers[instrucionRegister.r1];
+							registers[instrucionRegister.r1] = registers[instrucionRegister.r2];
+							registers[instrucionRegister.r2] = T;
+							programCounter++;
+							break;
 
-						break;
+						case STOP:
+							interrupts = Interrupts.INT_STOP;
+							break;
+
+						case DADO: //[A] <- [Rd]
+							if (isLegal(translateMemory(instrucionRegister.param))) {
+								memory[translateMemory(instrucionRegister.param)].opCode = Opcode.DADO;
+								memory[translateMemory(instrucionRegister.param)].param = instrucionRegister.r1;
+							}
+							programCounter ++;
+							break;
+
+						default:
+
+							break;
+					}
+				}
+
+				if (interrupts != Interrupts.NO_INTERRUPT) {
+					switch (interrupts){
+						case INT_STOP:
+						case INT_ENDERECO_INVALIDO:
+						case INT_INSTRUCAO_INVALIDA:
+							//Aqui mandamos para a rotina de tratamento de STOP, onde ele finaliza o processo,
+							// chamando o GP e escalona novo processo
+							rotinas.stop();
+							break;
+						case INT_TIMER:
+							//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
+							// chamando o GP e escalona novo processo
+							rotinas.timer(getContext());
+					}
+					break;
 				}
 			}
-
-			if (interrupts != Interrupts.NO_INTERRUPT) {
-				System.out.print("Interrupcao ");
-				System.out.println(interrupts);
-				break;
-			}
 		}
+
 	}
+
 }

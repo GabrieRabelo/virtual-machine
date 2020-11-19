@@ -51,9 +51,9 @@ public class GM {
                 pages--;
             }
         }
-        for(int i =0; i<allocatedFrames.length; i++){
-            System.out.println(allocatedFrames[i]);
-        }
+//        for(int i =0; i<allocatedFrames.length; i++){
+//            System.out.println(allocatedFrames[i]);
+//        }
         return allocatedFrames;
     }
 
