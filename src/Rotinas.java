@@ -46,7 +46,7 @@ public class Rotinas {
 
         Word ir = process.getContext().getInstructionRegister();
         String type = ir.r1 == 1 ? "IN" : "OUT";
-        ChamadaConsole chamadaConsole = new ChamadaConsole(type, process.getId(), ir.r2);
+        ChamadaConsole chamadaConsole = new ChamadaConsole(type, process.getId(), ir.r2, context.getAllocatedPages());
         pedidos.add(chamadaConsole);
         escSemaforo.release();
     }

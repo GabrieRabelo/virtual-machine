@@ -13,6 +13,7 @@ public class OS {
     private Rotinas rotinas;
     private Semaphore escSemaforo = new Semaphore(0);
     private Semaphore cpuSemaforo = new Semaphore(0);
+    private Console console;
 
     public OS() {
         memory = new Memory(escSemaforo, cpuSemaforo);
@@ -22,6 +23,7 @@ public class OS {
         gp = new GP();
         rotinas = new Rotinas();
         cpu = new CPU();
+        console = new Console(pedidos, memory);
 
         escalonador.setAttributes(prontos, escSemaforo, cpuSemaforo, cpu);
         gp.setAttributes(gm, memory, prontos, escSemaforo, escalonador);
