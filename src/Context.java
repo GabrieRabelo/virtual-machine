@@ -4,15 +4,15 @@ public class Context {
     private int[] allocatedPages;
     private int[] registers;
     private int programCounter;
-    private Word instrucionRegister;
+    private Word instructionRegister;
 
-    public Context(int base, int limite, int[] allocatedPages, int[] registers, int programCounter, Word instrucionRegister) {
+    public Context(int base, int limite, int[] allocatedPages, int[] registers, int programCounter, Word instructionRegister) {
         this.base = base;
         this.limite = limite;
         this.allocatedPages = allocatedPages;
         this.registers = registers;
         this.programCounter = programCounter;
-        this.instrucionRegister = instrucionRegister;
+        this.instructionRegister = instructionRegister;
     }
 
     public int getBase() {
@@ -35,8 +35,8 @@ public class Context {
         return programCounter;
     }
 
-    public Word getInstrucionRegister() {
-        return instrucionRegister;
+    public Word getInstructionRegister() {
+        return instructionRegister;
     }
 
 }

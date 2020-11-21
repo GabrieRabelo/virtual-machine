@@ -25,7 +25,7 @@ public class CPU extends Thread {
 
 	public void setAttributes(Word[] memory, Semaphore escSemaforo, Semaphore cpuSemaforo, Rotinas rotinas) {
 		this.memory = memory;
-		registers = new int[8];
+		registers = new int[10];
 		this.escSemaforo = escSemaforo;
 		this.cpuSemaforo = cpuSemaforo;
 		this.rotinas = rotinas;
@@ -232,6 +232,11 @@ public class CPU extends Thread {
 							programCounter++;
 							break;
 
+						case TRAP:
+							interrupts = Interrupts.INT_IO;
+							programCounter ++;
+							break;
+
 						case STOP:
 							interrupts = Interrupts.INT_STOP;
 							break;
@@ -263,6 +268,9 @@ public class CPU extends Thread {
 							//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
 							// chamando o GP e escalona novo processo
 							rotinas.timer(getContext());
+							break;
+						case INT_IO:
+							rotinas.chamadaIO(getContext());
 					}
 					break;
 				}

@@ -8,6 +8,8 @@ public class OS {
     private GP gp;
     private Escalonador escalonador;
     private LinkedList<PCB> prontos;
+    private LinkedList<PCB> bloqueados;
+    private LinkedList<ChamadaConsole> pedidos;
     private Rotinas rotinas;
     private Semaphore escSemaforo = new Semaphore(0);
     private Semaphore cpuSemaforo = new Semaphore(0);
@@ -23,7 +25,7 @@ public class OS {
 
         escalonador.setAttributes(prontos, escSemaforo, cpuSemaforo, cpu);
         gp.setAttributes(gm, memory, prontos, escSemaforo, escalonador);
-        rotinas.setAttributes(gp, escalonador, escSemaforo, memory);
+        rotinas.setAttributes(gp, escalonador, escSemaforo, memory, bloqueados, pedidos);
         cpu.setAttributes(memory.mem, escSemaforo, cpuSemaforo, rotinas);
 
         this.run();
