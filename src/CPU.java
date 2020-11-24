@@ -8,7 +8,7 @@ public class CPU extends Thread {
 	private int programCounter;
 	private Word instrucionRegister;
 	private int[] registers;
-	private Interrupts interrupts;
+	public Interrupts interrupts;
 	private int base;
 	private int limite;
 	private Word[] memory;
@@ -80,6 +80,11 @@ public class CPU extends Thread {
 		return true;
 	}
 
+	public void callIOInterrupt() {
+		System.out.println("TREAT IO");
+		rotinas.tratamentoIO(getContext());
+	}
+
 	public void run() {
 
 		while(true) {
@@ -90,7 +95,6 @@ public class CPU extends Thread {
 			}
 
 			while (true) {
-
 				//Fetch
 				if (isLegal(translateMemory(programCounter))) {
 					instrucionRegister = memory[translateMemory(programCounter)];
@@ -233,7 +237,7 @@ public class CPU extends Thread {
 							break;
 
 						case TRAP:
-							interrupts = Interrupts.INT_IO;
+							interrupts = Interrupts.INT_IO_CALL;
 							programCounter ++;
 							break;
 
@@ -269,8 +273,9 @@ public class CPU extends Thread {
 							// chamando o GP e escalona novo processo
 							rotinas.timer(getContext());
 							break;
-						case INT_IO:
+						case INT_IO_CALL:
 							rotinas.chamadaIO(getContext());
+							break;
 					}
 					break;
 				}

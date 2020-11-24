@@ -25,7 +25,7 @@ public class OS {
         gp = new GP();
         rotinas = new Rotinas();
         cpu = new CPU();
-        console = new Console(pedidos, memory);
+        console = new Console(pedidos, memory, cpu);
 
         escalonador.setAttributes(prontos, escSemaforo, cpuSemaforo, cpu);
         gp.setAttributes(gm, memory, prontos, escSemaforo, escalonador);

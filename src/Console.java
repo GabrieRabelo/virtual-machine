@@ -1,3 +1,4 @@
+import enums.Interrupts;
 import enums.Opcode;
 
 import java.util.LinkedList;
@@ -7,12 +8,14 @@ public class Console extends Thread{
 
     private LinkedList<ChamadaConsole> pedidos;
     private Memory memory;
+    private CPU cpu;
     private Scanner in;
 
-    public Console(LinkedList<ChamadaConsole> pedidos, Memory memory) {
+    public Console(LinkedList<ChamadaConsole> pedidos, Memory memory, CPU cpu) {
         in = new Scanner(System.in);
         this.pedidos = pedidos;
         this.memory = memory;
+        this.cpu = cpu;
     }
 
     public int translateMemory(int[] allocatedPages, int address){
@@ -39,10 +42,12 @@ public class Console extends Thread{
                 System.out.println("in foi dado");
                 int position = translateMemory(chamadaConsole.getAllocatedPages(), chamadaConsole.getMemoryAddress());
                 memory.mem[position] = new Word(Opcode.DADO, -1, -1, arg);
+                cpu.callIOInterrupt();
             } else if (type.equals("OUT")) {
                 System.out.println("esperando out");
                 int position = translateMemory(chamadaConsole.getAllocatedPages(), chamadaConsole.getMemoryAddress());
                 System.out.println(memory.mem[position]);
+                cpu.callIOInterrupt();
             }
         }
     }
