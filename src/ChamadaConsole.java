@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class ChamadaConsole {
     private String type;
     private int processId;
@@ -25,5 +27,15 @@ public class ChamadaConsole {
 
     public int getMemoryAddress() {
         return memoryAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "ChamadaConsole{" +
+                "type='" + type + '\'' +
+                ", processId=" + processId +
+                ", memoryAddress=" + memoryAddress +
+                ", allocatedPages=" + Arrays.toString(allocatedPages) +
+                '}';
     }
 }

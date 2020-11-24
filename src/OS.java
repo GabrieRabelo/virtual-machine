@@ -18,6 +18,8 @@ public class OS {
     public OS() {
         memory = new Memory(escSemaforo, cpuSemaforo);
         prontos = new LinkedList();
+        bloqueados = new LinkedList();
+        pedidos = new LinkedList();
         gm = new GM(memory.mem);
         escalonador = new Escalonador();
         gp = new GP();
@@ -44,6 +46,9 @@ public class OS {
         System.out.println("Iniciando Thread CPU");
         cpu.setName("Cpu");
         cpu.start();
+        System.out.println("Iniciando Thread Console");
+        console.setName("Console");
+        console.start();
     }
 
 }

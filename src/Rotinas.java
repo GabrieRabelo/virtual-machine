@@ -48,6 +48,8 @@ public class Rotinas {
         String type = ir.r1 == 1 ? "IN" : "OUT";
         ChamadaConsole chamadaConsole = new ChamadaConsole(type, process.getId(), ir.r2, context.getAllocatedPages());
         pedidos.add(chamadaConsole);
+        System.out.println("adicionei");
+        System.out.println(pedidos.get(0).toString());
         escSemaforo.release();
     }
 }

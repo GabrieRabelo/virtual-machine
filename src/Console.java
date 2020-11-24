@@ -22,16 +22,25 @@ public class Console extends Thread{
     public void run() {
         while(true) {
             if (pedidos.isEmpty()) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 continue;
             }
 
             ChamadaConsole chamadaConsole = pedidos.remove(0);
             String type = chamadaConsole.getType();
             if (type.equals("IN")) {
+                System.out.println("esperando in");
                 int arg = in.nextInt();
+                in.nextLine();
+                System.out.println("in foi dado");
                 int position = translateMemory(chamadaConsole.getAllocatedPages(), chamadaConsole.getMemoryAddress());
                 memory.mem[position] = new Word(Opcode.DADO, -1, -1, arg);
             } else if (type.equals("OUT")) {
+                System.out.println("esperando out");
                 int position = translateMemory(chamadaConsole.getAllocatedPages(), chamadaConsole.getMemoryAddress());
                 System.out.println(memory.mem[position]);
             }

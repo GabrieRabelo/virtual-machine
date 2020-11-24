@@ -17,7 +17,13 @@ public class Application {
 
 			try{
 				System.out.println("\nDigite o número do programa a ser executado: ");
-				entrada = Integer.parseInt(in.nextLine());
+				String palavra = in.nextLine();
+				if(palavra.split(" ")[0].equals("shell")){
+					entrada = Integer.parseInt(palavra.split(" ")[1]);
+				}else{
+					continue;
+				}
+				//entrada = Integer.parseInt(in.nextLine());
 				if(entrada == -1)
 					Runtime.getRuntime().exit(1);
 			} catch (NumberFormatException nfe) {
