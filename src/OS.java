@@ -15,7 +15,8 @@ public class OS {
     private Semaphore cpuSemaforo = new Semaphore(0);
     private Console console;
 
-    public OS() {
+
+    public OS(Semaphore appSemaforo) {
         memory = new Memory(escSemaforo, cpuSemaforo);
         prontos = new LinkedList();
         bloqueados = new LinkedList();
@@ -25,7 +26,7 @@ public class OS {
         gp = new GP();
         rotinas = new Rotinas();
         cpu = new CPU();
-        console = new Console(pedidos, memory, cpu);
+        console = new Console(pedidos, memory, cpu, appSemaforo);
 
         escalonador.setAttributes(prontos, escSemaforo, cpuSemaforo, cpu);
         gp.setAttributes(gm, memory, prontos, escSemaforo, escalonador);
@@ -35,11 +36,15 @@ public class OS {
         this.run();
     }
 
+    public void setEntradaConsole(int appEntrada){
+        console.setEntrada(appEntrada);
+    }
+
     public void carga(String file) {
         gp.criaProcesso(file);
     }
 
-    public void run(){
+    public void run() {
         escalonador.setName("Escalonador");
         System.out.println("\nIniciando Thread Escalonador");
         escalonador.start();
