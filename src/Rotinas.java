@@ -1,25 +1,34 @@
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 public class Rotinas {
     private GP gp;
     private Escalonador escalonador;
     private Semaphore escSemaforo;
+    private Semaphore conSemaforo;
     private Memory memory;
     private LinkedList<PCB> bloqueados;
-    private LinkedList<ChamadaConsole> pedidos;
+    private ConcurrentLinkedQueue<ChamadaConsole> pedidos;
 
 
     public Rotinas() {
     }
 
-    public void setAttributes(GP gp, Escalonador escalonador, Semaphore escSemaforo, Memory memory, LinkedList<PCB> bloqueados, LinkedList<ChamadaConsole> pedidos) {
+    public void setAttributes(GP gp,
+                              Escalonador escalonador,
+                              Semaphore escSemaforo,
+                              Memory memory,
+                              LinkedList<PCB> bloqueados,
+                              ConcurrentLinkedQueue<ChamadaConsole> pedidos,
+                              Semaphore conSemaforo) {
         this.gp = gp;
         this.escalonador = escalonador;
         this.escSemaforo = escSemaforo;
         this.memory = memory;
         this.bloqueados = bloqueados;
         this.pedidos = pedidos;
+        this.conSemaforo = conSemaforo;
     }
 
     //finaliza o processo, chamando o GP e escalona novo processo

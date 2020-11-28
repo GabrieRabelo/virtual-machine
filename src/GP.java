@@ -40,11 +40,9 @@ public class GP {
         process_id++;
         //cuidar com muitos processos, e já tiver processos ativos
         if(prontos.size() == 0 && escalonador.getRunningProcess() == null){
-            System.out.println("Adiciona com release");
             prontos.add(processo);
             escSemaforo.release();
         }else{
-            System.out.println("Adiciona sem release");
             prontos.add(processo);
         }
         mutex.release();

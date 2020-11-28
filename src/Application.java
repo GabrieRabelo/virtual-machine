@@ -10,7 +10,7 @@ public class Application {
 
         BootAnimation ba = new BootAnimation();
         ba.load();
-        Integer entrada;
+        int entrada;
         Semaphore semaphore = new Semaphore(0);
         OS os = new OS(semaphore);
 
@@ -19,21 +19,27 @@ public class Application {
         while (true) {
 
             try {
-                System.out.println("\nDigite o número do programa a ser executado: ");
+                System.out.println("\nDigite uma entrada, iniciando por S para shell e C para console");
                 String palavra = in.nextLine();
-                if (palavra.split(" ")[0].equals("shell")) {
-                    entrada = Integer.parseInt(palavra.split(" ")[1]);
-                } else {
-                    continue;
+                entrada = Integer.parseInt(palavra.split(" ")[1]);
+
+                if (palavra.split(" ")[0].equals("s")) {
+	                os.carga("p" + entrada + ".txt");
+	                continue;
+                } else if(palavra.split(" ")[0].equals("c")) {
+	                os.setEntradaConsole(entrada);
+	                continue;
                 }
                 //entrada = Integer.parseInt(in.nextLine());
                 if (entrada == -1)
-                    Runtime.getRuntime().exit(1);
+                    Runtime.getRuntime().exit(1); break;
+
             } catch (NumberFormatException nfe) {
                 System.out.println("Apenas números!");
                 continue;
             }
-            os.carga("p" + entrada + ".txt");
+
+
         }
     }
 }

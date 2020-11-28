@@ -81,7 +81,6 @@ public class CPU extends Thread {
 	}
 
 	public void callIOInterrupt() {
-		System.out.println("TREAT IO");
 		rotinas.tratamentoIO(getContext());
 	}
 

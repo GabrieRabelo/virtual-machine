@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 public class OS {
@@ -9,7 +10,7 @@ public class OS {
     private Escalonador escalonador;
     private LinkedList<PCB> prontos;
     private LinkedList<PCB> bloqueados;
-    private LinkedList<ChamadaConsole> pedidos;
+    private ConcurrentLinkedQueue<ChamadaConsole> pedidos;
     private Rotinas rotinas;
     private Semaphore escSemaforo = new Semaphore(0);
     private Semaphore cpuSemaforo = new Semaphore(0);
@@ -20,7 +21,7 @@ public class OS {
         memory = new Memory(escSemaforo, cpuSemaforo);
         prontos = new LinkedList();
         bloqueados = new LinkedList();
-        pedidos = new LinkedList();
+        pedidos = new ConcurrentLinkedQueue();
         gm = new GM(memory.mem);
         escalonador = new Escalonador();
         gp = new GP();
@@ -30,7 +31,7 @@ public class OS {
 
         escalonador.setAttributes(prontos, escSemaforo, cpuSemaforo, cpu);
         gp.setAttributes(gm, memory, prontos, escSemaforo, escalonador);
-        rotinas.setAttributes(gp, escalonador, escSemaforo, memory, bloqueados, pedidos);
+        rotinas.setAttributes(gp, escalonador, escSemaforo, memory, bloqueados, pedidos, appSemaforo);
         cpu.setAttributes(memory.mem, escSemaforo, cpuSemaforo, rotinas);
 
         this.run();
