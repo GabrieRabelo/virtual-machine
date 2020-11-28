@@ -19,7 +19,8 @@ public class Application {
         while (true) {
 
             try {
-                System.out.println("\nDigite uma entrada, iniciando por S para shell e C para console");
+                System.out.println("\nDigite uma entrada, iniciando por \"s\" para shell e \"c\" " +
+                        "para console\nExemplo: \"s 1\" para executar o programa p1.txt.");
                 String palavra = in.nextLine();
                 entrada = Integer.parseInt(palavra.split(" ")[1]);
 
@@ -36,6 +37,10 @@ public class Application {
 
             } catch (NumberFormatException nfe) {
                 System.out.println("Apenas números!");
+                continue;
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Formato inválido.");
                 continue;
             }
 
