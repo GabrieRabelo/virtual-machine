@@ -56,7 +56,7 @@ public class Console extends Thread {
                 appEntrada = -2;
             } else if (type.equals("OUT")) {
                 int position = translateMemory(chamadaConsole.getAllocatedPages(), chamadaConsole.getMemoryAddress());
-                System.out.println(memory.mem[position]);
+                System.out.println("\nSaída do console: " + memory.mem[position] + "\n");
                 cpu.callIOInterrupt();
             }
         }

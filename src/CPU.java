@@ -32,8 +32,11 @@ public class CPU extends Thread {
 	}
 
 	public int translateMemory(int address){
-//		System.out.println(address);
-		return (allocatedPages[(address / 16)] * 16) + (address % 16);
+		try {
+			return (allocatedPages[(address / 16)] * 16) + (address % 16);
+		} catch(ArrayIndexOutOfBoundsException e) {
+			return -1;
+		}
 	}
 
 	public Context getContext() {
@@ -260,16 +263,15 @@ public class CPU extends Thread {
 
 				if (interrupts != Interrupts.NO_INTERRUPT) {
 					switch (interrupts){
-						case INT_STOP:
 						case INT_ENDERECO_INVALIDO:
+							System.out.println("Tentativa de acesso de endereço invalido.");
+							rotinas.stop();
+							break;
+						case INT_STOP:
 						case INT_INSTRUCAO_INVALIDA:
-							//Aqui mandamos para a rotina de tratamento de STOP, onde ele finaliza o processo,
-							// chamando o GP e escalona novo processo
 							rotinas.stop();
 							break;
 						case INT_TIMER:
-							//Aqui mandamos para a rotina de tratamento de TIMER, onde ele salva o estado atual do processo,
-							// chamando o GP e escalona novo processo
 							rotinas.timer(getContext());
 							break;
 						case INT_IO_CALL:
